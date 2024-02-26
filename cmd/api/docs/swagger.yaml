@@ -1,0 +1,112 @@
+definitions:
+  api.BaseResp:
+    properties:
+      code:
+        type: integer
+      msg:
+        type: string
+    type: object
+  api.LoginReq:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  api.LoginResp:
+    properties:
+      base:
+        $ref: '#/definitions/api.BaseResp'
+      token:
+        type: string
+      userId:
+        type: integer
+    type: object
+  api.RegisterReq:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  api.RegisterResp:
+    properties:
+      base:
+        $ref: '#/definitions/api.BaseResp'
+      token:
+        type: string
+    type: object
+  api.User:
+    properties:
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
+  api.UserInfoReq:
+    properties:
+      userId:
+        type: integer
+    type: object
+  api.UserInfoResp:
+    properties:
+      base:
+        $ref: '#/definitions/api.BaseResp'
+      user:
+        $ref: '#/definitions/api.User'
+    type: object
+info:
+  contact: {}
+paths:
+  /user/info:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求体
+        in: body
+        name: UserInfoReq
+        required: true
+        schema:
+          $ref: '#/definitions/api.UserInfoReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.UserInfoResp'
+      summary: 用户信息
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求体
+        in: body
+        name: LoginReq
+        required: true
+        schema:
+          $ref: '#/definitions/api.LoginReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.LoginResp'
+      summary: 用户登录
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 请求体
+        in: body
+        name: RegisterReq
+        required: true
+        schema:
+          $ref: '#/definitions/api.RegisterReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.RegisterResp'
+      summary: 用户注册
+swagger: "2.0"
