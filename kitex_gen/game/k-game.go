@@ -743,9 +743,10 @@ func (p *MoveReq) FastRead(buf []byte) (int, error) {
 	var l int
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetOrginPos bool = false
-	var issetTargetPos bool = false
-	var issetCorner bool = false
+	var issetCells bool = false
+	var issetObstacle bool = false
+	var issetTargetCell bool = false
+	var issetOriginCell bool = false
 	_, l, err = bthrift.Binary.ReadStructBegin(buf)
 	offset += l
 	if err != nil {
@@ -763,13 +764,13 @@ func (p *MoveReq) FastRead(buf []byte) (int, error) {
 		}
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.STRUCT {
+			if fieldTypeId == thrift.LIST {
 				l, err = p.FastReadField1(buf[offset:])
 				offset += l
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetOrginPos = true
+				issetCells = true
 			} else {
 				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -778,13 +779,13 @@ func (p *MoveReq) FastRead(buf []byte) (int, error) {
 				}
 			}
 		case 2:
-			if fieldTypeId == thrift.STRUCT {
+			if fieldTypeId == thrift.LIST {
 				l, err = p.FastReadField2(buf[offset:])
 				offset += l
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetTargetPos = true
+				issetObstacle = true
 			} else {
 				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -793,12 +794,13 @@ func (p *MoveReq) FastRead(buf []byte) (int, error) {
 				}
 			}
 		case 3:
-			if fieldTypeId == thrift.LIST {
+			if fieldTypeId == thrift.I64 {
 				l, err = p.FastReadField3(buf[offset:])
 				offset += l
 				if err != nil {
 					goto ReadFieldError
 				}
+				issetTargetCell = true
 			} else {
 				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -807,13 +809,13 @@ func (p *MoveReq) FastRead(buf []byte) (int, error) {
 				}
 			}
 		case 4:
-			if fieldTypeId == thrift.LIST {
+			if fieldTypeId == thrift.I64 {
 				l, err = p.FastReadField4(buf[offset:])
 				offset += l
 				if err != nil {
 					goto ReadFieldError
 				}
-				issetCorner = true
+				issetOriginCell = true
 			} else {
 				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 				offset += l
@@ -841,17 +843,22 @@ func (p *MoveReq) FastRead(buf []byte) (int, error) {
 		goto ReadStructEndError
 	}
 
-	if !issetOrginPos {
+	if !issetCells {
 		fieldId = 1
 		goto RequiredFieldNotSetError
 	}
 
-	if !issetTargetPos {
+	if !issetObstacle {
 		fieldId = 2
 		goto RequiredFieldNotSetError
 	}
 
-	if !issetCorner {
+	if !issetTargetCell {
+		fieldId = 3
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetOriginCell {
 		fieldId = 4
 		goto RequiredFieldNotSetError
 	}
@@ -875,30 +882,34 @@ RequiredFieldNotSetError:
 func (p *MoveReq) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
-	tmp := NewPoint()
-	if l, err := tmp.FastRead(buf[offset:]); err != nil {
+	_, size, l, err := bthrift.Binary.ReadListBegin(buf[offset:])
+	offset += l
+	if err != nil {
+		return offset, err
+	}
+	p.Cells = make([]int64, 0, size)
+	for i := 0; i < size; i++ {
+		var _elem int64
+		if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
+			return offset, err
+		} else {
+			offset += l
+
+			_elem = v
+
+		}
+
+		p.Cells = append(p.Cells, _elem)
+	}
+	if l, err := bthrift.Binary.ReadListEnd(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
 	}
-	p.OrginPos = tmp
 	return offset, nil
 }
 
 func (p *MoveReq) FastReadField2(buf []byte) (int, error) {
-	offset := 0
-
-	tmp := NewPoint()
-	if l, err := tmp.FastRead(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-	}
-	p.TargetPos = tmp
-	return offset, nil
-}
-
-func (p *MoveReq) FastReadField3(buf []byte) (int, error) {
 	offset := 0
 
 	_, size, l, err := bthrift.Binary.ReadListBegin(buf[offset:])
@@ -906,13 +917,16 @@ func (p *MoveReq) FastReadField3(buf []byte) (int, error) {
 	if err != nil {
 		return offset, err
 	}
-	p.Obstacle = make([]*Point, 0, size)
+	p.Obstacle = make([]int64, 0, size)
 	for i := 0; i < size; i++ {
-		_elem := NewPoint()
-		if l, err := _elem.FastRead(buf[offset:]); err != nil {
+		var _elem int64
+		if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
 			return offset, err
 		} else {
 			offset += l
+
+			_elem = v
+
 		}
 
 		p.Obstacle = append(p.Obstacle, _elem)
@@ -925,29 +939,30 @@ func (p *MoveReq) FastReadField3(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *MoveReq) FastReadField4(buf []byte) (int, error) {
+func (p *MoveReq) FastReadField3(buf []byte) (int, error) {
 	offset := 0
 
-	_, size, l, err := bthrift.Binary.ReadListBegin(buf[offset:])
-	offset += l
-	if err != nil {
-		return offset, err
-	}
-	p.Corner = make([]*Point, 0, size)
-	for i := 0; i < size; i++ {
-		_elem := NewPoint()
-		if l, err := _elem.FastRead(buf[offset:]); err != nil {
-			return offset, err
-		} else {
-			offset += l
-		}
-
-		p.Corner = append(p.Corner, _elem)
-	}
-	if l, err := bthrift.Binary.ReadListEnd(buf[offset:]); err != nil {
+	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
+
+		p.TargetCell = v
+
+	}
+	return offset, nil
+}
+
+func (p *MoveReq) FastReadField4(buf []byte) (int, error) {
+	offset := 0
+
+	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+
+		p.OriginCell = v
+
 	}
 	return offset, nil
 }
@@ -961,10 +976,10 @@ func (p *MoveReq) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter)
 	offset := 0
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "MoveReq")
 	if p != nil {
-		offset += p.fastWriteField1(buf[offset:], binaryWriter)
-		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 		offset += p.fastWriteField3(buf[offset:], binaryWriter)
 		offset += p.fastWriteField4(buf[offset:], binaryWriter)
+		offset += p.fastWriteField1(buf[offset:], binaryWriter)
+		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
 	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
@@ -987,92 +1002,92 @@ func (p *MoveReq) BLength() int {
 
 func (p *MoveReq) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "orginPos", thrift.STRUCT, 1)
-	offset += p.OrginPos.FastWriteNocopy(buf[offset:], binaryWriter)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "cells", thrift.LIST, 1)
+	listBeginOffset := offset
+	offset += bthrift.Binary.ListBeginLength(thrift.I64, 0)
+	var length int
+	for _, v := range p.Cells {
+		length++
+		offset += bthrift.Binary.WriteI64(buf[offset:], v)
+
+	}
+	bthrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.I64, length)
+	offset += bthrift.Binary.WriteListEnd(buf[offset:])
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
 }
 
 func (p *MoveReq) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "targetPos", thrift.STRUCT, 2)
-	offset += p.TargetPos.FastWriteNocopy(buf[offset:], binaryWriter)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "obstacle", thrift.LIST, 2)
+	listBeginOffset := offset
+	offset += bthrift.Binary.ListBeginLength(thrift.I64, 0)
+	var length int
+	for _, v := range p.Obstacle {
+		length++
+		offset += bthrift.Binary.WriteI64(buf[offset:], v)
+
+	}
+	bthrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.I64, length)
+	offset += bthrift.Binary.WriteListEnd(buf[offset:])
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
 }
 
 func (p *MoveReq) fastWriteField3(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	if p.IsSetObstacle() {
-		offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "obstacle", thrift.LIST, 3)
-		listBeginOffset := offset
-		offset += bthrift.Binary.ListBeginLength(thrift.STRUCT, 0)
-		var length int
-		for _, v := range p.Obstacle {
-			length++
-			offset += v.FastWriteNocopy(buf[offset:], binaryWriter)
-		}
-		bthrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRUCT, length)
-		offset += bthrift.Binary.WriteListEnd(buf[offset:])
-		offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
-	}
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "targetCell", thrift.I64, 3)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.TargetCell)
+
+	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
 }
 
 func (p *MoveReq) fastWriteField4(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "corner", thrift.LIST, 4)
-	listBeginOffset := offset
-	offset += bthrift.Binary.ListBeginLength(thrift.STRUCT, 0)
-	var length int
-	for _, v := range p.Corner {
-		length++
-		offset += v.FastWriteNocopy(buf[offset:], binaryWriter)
-	}
-	bthrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRUCT, length)
-	offset += bthrift.Binary.WriteListEnd(buf[offset:])
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "originCell", thrift.I64, 4)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.OriginCell)
+
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
 }
 
 func (p *MoveReq) field1Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("orginPos", thrift.STRUCT, 1)
-	l += p.OrginPos.BLength()
+	l += bthrift.Binary.FieldBeginLength("cells", thrift.LIST, 1)
+	l += bthrift.Binary.ListBeginLength(thrift.I64, len(p.Cells))
+	var tmpV int64
+	l += bthrift.Binary.I64Length(int64(tmpV)) * len(p.Cells)
+	l += bthrift.Binary.ListEndLength()
 	l += bthrift.Binary.FieldEndLength()
 	return l
 }
 
 func (p *MoveReq) field2Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("targetPos", thrift.STRUCT, 2)
-	l += p.TargetPos.BLength()
+	l += bthrift.Binary.FieldBeginLength("obstacle", thrift.LIST, 2)
+	l += bthrift.Binary.ListBeginLength(thrift.I64, len(p.Obstacle))
+	var tmpV int64
+	l += bthrift.Binary.I64Length(int64(tmpV)) * len(p.Obstacle)
+	l += bthrift.Binary.ListEndLength()
 	l += bthrift.Binary.FieldEndLength()
 	return l
 }
 
 func (p *MoveReq) field3Length() int {
 	l := 0
-	if p.IsSetObstacle() {
-		l += bthrift.Binary.FieldBeginLength("obstacle", thrift.LIST, 3)
-		l += bthrift.Binary.ListBeginLength(thrift.STRUCT, len(p.Obstacle))
-		for _, v := range p.Obstacle {
-			l += v.BLength()
-		}
-		l += bthrift.Binary.ListEndLength()
-		l += bthrift.Binary.FieldEndLength()
-	}
+	l += bthrift.Binary.FieldBeginLength("targetCell", thrift.I64, 3)
+	l += bthrift.Binary.I64Length(p.TargetCell)
+
+	l += bthrift.Binary.FieldEndLength()
 	return l
 }
 
 func (p *MoveReq) field4Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("corner", thrift.LIST, 4)
-	l += bthrift.Binary.ListBeginLength(thrift.STRUCT, len(p.Corner))
-	for _, v := range p.Corner {
-		l += v.BLength()
-	}
-	l += bthrift.Binary.ListEndLength()
+	l += bthrift.Binary.FieldBeginLength("originCell", thrift.I64, 4)
+	l += bthrift.Binary.I64Length(p.OriginCell)
+
 	l += bthrift.Binary.FieldEndLength()
 	return l
 }
@@ -1198,13 +1213,16 @@ func (p *MoveResp) FastReadField2(buf []byte) (int, error) {
 	if err != nil {
 		return offset, err
 	}
-	p.Path = make([]*Point, 0, size)
+	p.Path = make([]int64, 0, size)
 	for i := 0; i < size; i++ {
-		_elem := NewPoint()
-		if l, err := _elem.FastRead(buf[offset:]); err != nil {
+		var _elem int64
+		if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
 			return offset, err
 		} else {
 			offset += l
+
+			_elem = v
+
 		}
 
 		p.Path = append(p.Path, _elem)
@@ -1258,13 +1276,14 @@ func (p *MoveResp) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter
 	offset := 0
 	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "path", thrift.LIST, 2)
 	listBeginOffset := offset
-	offset += bthrift.Binary.ListBeginLength(thrift.STRUCT, 0)
+	offset += bthrift.Binary.ListBeginLength(thrift.I64, 0)
 	var length int
 	for _, v := range p.Path {
 		length++
-		offset += v.FastWriteNocopy(buf[offset:], binaryWriter)
+		offset += bthrift.Binary.WriteI64(buf[offset:], v)
+
 	}
-	bthrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.STRUCT, length)
+	bthrift.Binary.WriteListBegin(buf[listBeginOffset:], thrift.I64, length)
 	offset += bthrift.Binary.WriteListEnd(buf[offset:])
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
@@ -1281,10 +1300,9 @@ func (p *MoveResp) field1Length() int {
 func (p *MoveResp) field2Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("path", thrift.LIST, 2)
-	l += bthrift.Binary.ListBeginLength(thrift.STRUCT, len(p.Path))
-	for _, v := range p.Path {
-		l += v.BLength()
-	}
+	l += bthrift.Binary.ListBeginLength(thrift.I64, len(p.Path))
+	var tmpV int64
+	l += bthrift.Binary.I64Length(int64(tmpV)) * len(p.Path)
 	l += bthrift.Binary.ListEndLength()
 	l += bthrift.Binary.FieldEndLength()
 	return l

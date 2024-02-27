@@ -889,10 +889,10 @@ func (p *MatchResp) Field2DeepEqual(src int64) bool {
 }
 
 type MoveReq struct {
-	OrginPos  *Point   `thrift:"orginPos,1,required" frugal:"1,required,Point" json:"orginPos"`
-	TargetPos *Point   `thrift:"targetPos,2,required" frugal:"2,required,Point" json:"targetPos"`
-	Obstacle  []*Point `thrift:"obstacle,3,optional" frugal:"3,optional,list<Point>" json:"obstacle,omitempty"`
-	Corner    []*Point `thrift:"corner,4,required" frugal:"4,required,list<Point>" json:"corner"`
+	Cells      []int64 `thrift:"cells,1,required" frugal:"1,required,list<i64>" json:"cells"`
+	Obstacle   []int64 `thrift:"obstacle,2,required" frugal:"2,required,list<i64>" json:"obstacle"`
+	TargetCell int64   `thrift:"targetCell,3,required" frugal:"3,required,i64" json:"targetCell"`
+	OriginCell int64   `thrift:"originCell,4,required" frugal:"4,required,i64" json:"originCell"`
 }
 
 func NewMoveReq() *MoveReq {
@@ -903,75 +903,49 @@ func (p *MoveReq) InitDefault() {
 	*p = MoveReq{}
 }
 
-var MoveReq_OrginPos_DEFAULT *Point
-
-func (p *MoveReq) GetOrginPos() (v *Point) {
-	if !p.IsSetOrginPos() {
-		return MoveReq_OrginPos_DEFAULT
-	}
-	return p.OrginPos
+func (p *MoveReq) GetCells() (v []int64) {
+	return p.Cells
 }
 
-var MoveReq_TargetPos_DEFAULT *Point
-
-func (p *MoveReq) GetTargetPos() (v *Point) {
-	if !p.IsSetTargetPos() {
-		return MoveReq_TargetPos_DEFAULT
-	}
-	return p.TargetPos
-}
-
-var MoveReq_Obstacle_DEFAULT []*Point
-
-func (p *MoveReq) GetObstacle() (v []*Point) {
-	if !p.IsSetObstacle() {
-		return MoveReq_Obstacle_DEFAULT
-	}
+func (p *MoveReq) GetObstacle() (v []int64) {
 	return p.Obstacle
 }
 
-func (p *MoveReq) GetCorner() (v []*Point) {
-	return p.Corner
+func (p *MoveReq) GetTargetCell() (v int64) {
+	return p.TargetCell
 }
-func (p *MoveReq) SetOrginPos(val *Point) {
-	p.OrginPos = val
+
+func (p *MoveReq) GetOriginCell() (v int64) {
+	return p.OriginCell
 }
-func (p *MoveReq) SetTargetPos(val *Point) {
-	p.TargetPos = val
+func (p *MoveReq) SetCells(val []int64) {
+	p.Cells = val
 }
-func (p *MoveReq) SetObstacle(val []*Point) {
+func (p *MoveReq) SetObstacle(val []int64) {
 	p.Obstacle = val
 }
-func (p *MoveReq) SetCorner(val []*Point) {
-	p.Corner = val
+func (p *MoveReq) SetTargetCell(val int64) {
+	p.TargetCell = val
+}
+func (p *MoveReq) SetOriginCell(val int64) {
+	p.OriginCell = val
 }
 
 var fieldIDToName_MoveReq = map[int16]string{
-	1: "orginPos",
-	2: "targetPos",
-	3: "obstacle",
-	4: "corner",
-}
-
-func (p *MoveReq) IsSetOrginPos() bool {
-	return p.OrginPos != nil
-}
-
-func (p *MoveReq) IsSetTargetPos() bool {
-	return p.TargetPos != nil
-}
-
-func (p *MoveReq) IsSetObstacle() bool {
-	return p.Obstacle != nil
+	1: "cells",
+	2: "obstacle",
+	3: "targetCell",
+	4: "originCell",
 }
 
 func (p *MoveReq) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetOrginPos bool = false
-	var issetTargetPos bool = false
-	var issetCorner bool = false
+	var issetCells bool = false
+	var issetObstacle bool = false
+	var issetTargetCell bool = false
+	var issetOriginCell bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -988,37 +962,38 @@ func (p *MoveReq) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.STRUCT {
+			if fieldTypeId == thrift.LIST {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
-				issetOrginPos = true
+				issetCells = true
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		case 2:
-			if fieldTypeId == thrift.STRUCT {
+			if fieldTypeId == thrift.LIST {
 				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
-				issetTargetPos = true
+				issetObstacle = true
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		case 3:
-			if fieldTypeId == thrift.LIST {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField3(iprot); err != nil {
 					goto ReadFieldError
 				}
+				issetTargetCell = true
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
 		case 4:
-			if fieldTypeId == thrift.LIST {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField4(iprot); err != nil {
 					goto ReadFieldError
 				}
-				issetCorner = true
+				issetOriginCell = true
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
@@ -1035,17 +1010,22 @@ func (p *MoveReq) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
-	if !issetOrginPos {
+	if !issetCells {
 		fieldId = 1
 		goto RequiredFieldNotSetError
 	}
 
-	if !issetTargetPos {
+	if !issetObstacle {
 		fieldId = 2
 		goto RequiredFieldNotSetError
 	}
 
-	if !issetCorner {
+	if !issetTargetCell {
+		fieldId = 3
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetOriginCell {
 		fieldId = 4
 		goto RequiredFieldNotSetError
 	}
@@ -1068,29 +1048,40 @@ RequiredFieldNotSetError:
 }
 
 func (p *MoveReq) ReadField1(iprot thrift.TProtocol) error {
-	p.OrginPos = NewPoint()
-	if err := p.OrginPos.Read(iprot); err != nil {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
+		return err
+	}
+	p.Cells = make([]int64, 0, size)
+	for i := 0; i < size; i++ {
+
+		var _elem int64
+		if v, err := iprot.ReadI64(); err != nil {
+			return err
+		} else {
+			_elem = v
+		}
+
+		p.Cells = append(p.Cells, _elem)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
 		return err
 	}
 	return nil
 }
 func (p *MoveReq) ReadField2(iprot thrift.TProtocol) error {
-	p.TargetPos = NewPoint()
-	if err := p.TargetPos.Read(iprot); err != nil {
-		return err
-	}
-	return nil
-}
-func (p *MoveReq) ReadField3(iprot thrift.TProtocol) error {
 	_, size, err := iprot.ReadListBegin()
 	if err != nil {
 		return err
 	}
-	p.Obstacle = make([]*Point, 0, size)
+	p.Obstacle = make([]int64, 0, size)
 	for i := 0; i < size; i++ {
-		_elem := NewPoint()
-		if err := _elem.Read(iprot); err != nil {
+
+		var _elem int64
+		if v, err := iprot.ReadI64(); err != nil {
 			return err
+		} else {
+			_elem = v
 		}
 
 		p.Obstacle = append(p.Obstacle, _elem)
@@ -1100,22 +1091,21 @@ func (p *MoveReq) ReadField3(iprot thrift.TProtocol) error {
 	}
 	return nil
 }
-func (p *MoveReq) ReadField4(iprot thrift.TProtocol) error {
-	_, size, err := iprot.ReadListBegin()
-	if err != nil {
-		return err
-	}
-	p.Corner = make([]*Point, 0, size)
-	for i := 0; i < size; i++ {
-		_elem := NewPoint()
-		if err := _elem.Read(iprot); err != nil {
-			return err
-		}
+func (p *MoveReq) ReadField3(iprot thrift.TProtocol) error {
 
-		p.Corner = append(p.Corner, _elem)
-	}
-	if err := iprot.ReadListEnd(); err != nil {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
+	} else {
+		p.TargetCell = v
+	}
+	return nil
+}
+func (p *MoveReq) ReadField4(iprot thrift.TProtocol) error {
+
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.OriginCell = v
 	}
 	return nil
 }
@@ -1161,10 +1151,18 @@ WriteStructEndError:
 }
 
 func (p *MoveReq) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("orginPos", thrift.STRUCT, 1); err != nil {
+	if err = oprot.WriteFieldBegin("cells", thrift.LIST, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := p.OrginPos.Write(oprot); err != nil {
+	if err := oprot.WriteListBegin(thrift.I64, len(p.Cells)); err != nil {
+		return err
+	}
+	for _, v := range p.Cells {
+		if err := oprot.WriteI64(v); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1178,10 +1176,18 @@ WriteFieldEndError:
 }
 
 func (p *MoveReq) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("targetPos", thrift.STRUCT, 2); err != nil {
+	if err = oprot.WriteFieldBegin("obstacle", thrift.LIST, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := p.TargetPos.Write(oprot); err != nil {
+	if err := oprot.WriteListBegin(thrift.I64, len(p.Obstacle)); err != nil {
+		return err
+	}
+	for _, v := range p.Obstacle {
+		if err := oprot.WriteI64(v); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1195,24 +1201,14 @@ WriteFieldEndError:
 }
 
 func (p *MoveReq) writeField3(oprot thrift.TProtocol) (err error) {
-	if p.IsSetObstacle() {
-		if err = oprot.WriteFieldBegin("obstacle", thrift.LIST, 3); err != nil {
-			goto WriteFieldBeginError
-		}
-		if err := oprot.WriteListBegin(thrift.STRUCT, len(p.Obstacle)); err != nil {
-			return err
-		}
-		for _, v := range p.Obstacle {
-			if err := v.Write(oprot); err != nil {
-				return err
-			}
-		}
-		if err := oprot.WriteListEnd(); err != nil {
-			return err
-		}
-		if err = oprot.WriteFieldEnd(); err != nil {
-			goto WriteFieldEndError
-		}
+	if err = oprot.WriteFieldBegin("targetCell", thrift.I64, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.TargetCell); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
 	}
 	return nil
 WriteFieldBeginError:
@@ -1222,18 +1218,10 @@ WriteFieldEndError:
 }
 
 func (p *MoveReq) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("corner", thrift.LIST, 4); err != nil {
+	if err = oprot.WriteFieldBegin("originCell", thrift.I64, 4); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteListBegin(thrift.STRUCT, len(p.Corner)); err != nil {
-		return err
-	}
-	for _, v := range p.Corner {
-		if err := v.Write(oprot); err != nil {
-			return err
-		}
-	}
-	if err := oprot.WriteListEnd(); err != nil {
+	if err := oprot.WriteI64(p.OriginCell); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1260,65 +1248,65 @@ func (p *MoveReq) DeepEqual(ano *MoveReq) bool {
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.OrginPos) {
+	if !p.Field1DeepEqual(ano.Cells) {
 		return false
 	}
-	if !p.Field2DeepEqual(ano.TargetPos) {
+	if !p.Field2DeepEqual(ano.Obstacle) {
 		return false
 	}
-	if !p.Field3DeepEqual(ano.Obstacle) {
+	if !p.Field3DeepEqual(ano.TargetCell) {
 		return false
 	}
-	if !p.Field4DeepEqual(ano.Corner) {
+	if !p.Field4DeepEqual(ano.OriginCell) {
 		return false
 	}
 	return true
 }
 
-func (p *MoveReq) Field1DeepEqual(src *Point) bool {
+func (p *MoveReq) Field1DeepEqual(src []int64) bool {
 
-	if !p.OrginPos.DeepEqual(src) {
+	if len(p.Cells) != len(src) {
 		return false
+	}
+	for i, v := range p.Cells {
+		_src := src[i]
+		if v != _src {
+			return false
+		}
 	}
 	return true
 }
-func (p *MoveReq) Field2DeepEqual(src *Point) bool {
-
-	if !p.TargetPos.DeepEqual(src) {
-		return false
-	}
-	return true
-}
-func (p *MoveReq) Field3DeepEqual(src []*Point) bool {
+func (p *MoveReq) Field2DeepEqual(src []int64) bool {
 
 	if len(p.Obstacle) != len(src) {
 		return false
 	}
 	for i, v := range p.Obstacle {
 		_src := src[i]
-		if !v.DeepEqual(_src) {
+		if v != _src {
 			return false
 		}
 	}
 	return true
 }
-func (p *MoveReq) Field4DeepEqual(src []*Point) bool {
+func (p *MoveReq) Field3DeepEqual(src int64) bool {
 
-	if len(p.Corner) != len(src) {
+	if p.TargetCell != src {
 		return false
 	}
-	for i, v := range p.Corner {
-		_src := src[i]
-		if !v.DeepEqual(_src) {
-			return false
-		}
+	return true
+}
+func (p *MoveReq) Field4DeepEqual(src int64) bool {
+
+	if p.OriginCell != src {
+		return false
 	}
 	return true
 }
 
 type MoveResp struct {
 	Base *BaseResp `thrift:"base,1,required" frugal:"1,required,BaseResp" json:"base"`
-	Path []*Point  `thrift:"path,2,required" frugal:"2,required,list<Point>" json:"path"`
+	Path []int64   `thrift:"path,2,required" frugal:"2,required,list<i64>" json:"path"`
 }
 
 func NewMoveResp() *MoveResp {
@@ -1338,13 +1326,13 @@ func (p *MoveResp) GetBase() (v *BaseResp) {
 	return p.Base
 }
 
-func (p *MoveResp) GetPath() (v []*Point) {
+func (p *MoveResp) GetPath() (v []int64) {
 	return p.Path
 }
 func (p *MoveResp) SetBase(val *BaseResp) {
 	p.Base = val
 }
-func (p *MoveResp) SetPath(val []*Point) {
+func (p *MoveResp) SetPath(val []int64) {
 	p.Path = val
 }
 
@@ -1448,11 +1436,14 @@ func (p *MoveResp) ReadField2(iprot thrift.TProtocol) error {
 	if err != nil {
 		return err
 	}
-	p.Path = make([]*Point, 0, size)
+	p.Path = make([]int64, 0, size)
 	for i := 0; i < size; i++ {
-		_elem := NewPoint()
-		if err := _elem.Read(iprot); err != nil {
+
+		var _elem int64
+		if v, err := iprot.ReadI64(); err != nil {
 			return err
+		} else {
+			_elem = v
 		}
 
 		p.Path = append(p.Path, _elem)
@@ -1516,11 +1507,11 @@ func (p *MoveResp) writeField2(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("path", thrift.LIST, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteListBegin(thrift.STRUCT, len(p.Path)); err != nil {
+	if err := oprot.WriteListBegin(thrift.I64, len(p.Path)); err != nil {
 		return err
 	}
 	for _, v := range p.Path {
-		if err := v.Write(oprot); err != nil {
+		if err := oprot.WriteI64(v); err != nil {
 			return err
 		}
 	}
@@ -1567,14 +1558,14 @@ func (p *MoveResp) Field1DeepEqual(src *BaseResp) bool {
 	}
 	return true
 }
-func (p *MoveResp) Field2DeepEqual(src []*Point) bool {
+func (p *MoveResp) Field2DeepEqual(src []int64) bool {
 
 	if len(p.Path) != len(src) {
 		return false
 	}
 	for i, v := range p.Path {
 		_src := src[i]
-		if !v.DeepEqual(_src) {
+		if v != _src {
 			return false
 		}
 	}

@@ -1,35 +1,34 @@
 package service
 
 import (
+	"github.com/uber/h3-go/v4"
 	"wargaming/kitex_gen/game"
 	"wargaming/pkg/h3code"
 )
 
 func (s *GameService) Move(req *game.MoveReq) (*game.MoveResp, error) {
-	resolution := 6
 
-	// 获取当前图幅六角网格编码
-	cornerCells := h3code.GetCellsFromPolygon(req.Corner, resolution)
+	var cells []h3.Cell
+	var obstacleCells []h3.Cell
 
-	// 获取当前障碍物六角网格编码
-	obstacleCells := h3code.GetCellsFromPolygon(req.Obstacle, resolution)
+	for _, it := range req.Cells {
+		cells = append(cells, h3.Cell(it))
+	}
 
-	// 获取原始位置六角网格编码
-	originPosCell := h3code.GetCellFromPoint(req.OrginPos, resolution)
+	for _, it := range req.Obstacle {
+		obstacleCells = append(obstacleCells, h3.Cell(it))
+	}
 
-	// 获取目标移动位置六角网格编码
-	targetPosCell := h3code.GetCellFromPoint(req.TargetPos, resolution)
-
-	tiles := h3code.InitTiles(cornerCells, obstacleCells)
+	tiles := h3code.InitTiles(cells, obstacleCells)
 
 	var startTail, endTail *h3code.Tile
 
 	for _, tile := range tiles {
-		if tile.Position == originPosCell {
+		if tile.Position == h3.Cell(req.OriginCell) {
 			startTail = tile
 		}
 
-		if tile.Position == targetPosCell {
+		if tile.Position == h3.Cell(req.TargetCell) {
 			endTail = tile
 		}
 	}
@@ -41,10 +40,7 @@ func (s *GameService) Move(req *game.MoveReq) (*game.MoveResp, error) {
 	resp := new(game.MoveResp)
 
 	for _, p := range path {
-		resp.Path = append(resp.Path, &game.Point{
-			Lat: p.Position.LatLng().Lat,
-			Lng: p.Position.LatLng().Lng,
-		})
+		resp.Path = append(resp.Path, int64(p.Position))
 
 	}
 
