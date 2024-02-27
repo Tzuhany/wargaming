@@ -3,6 +3,7 @@ package ws
 import (
 	"context"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/mitchellh/mapstructure"
 	"time"
 	"wargaming/cmd/interact/biz/rpc"
 	"wargaming/kitex_gen/game"
@@ -10,19 +11,32 @@ import (
 	"wargaming/pkg/errno"
 )
 
-func MatchHandle(ctx context.Context, msg MatchData) (*Data, error) {
+type ActionHandler interface {
+	Handle(ctx context.Context, req interface{}) (*Data, error)
+}
 
-	WsConnManager.SetStatus(msg.UserId, Matching)
+type MatchHandler struct{}
+
+func (h *MatchHandler) Handle(ctx context.Context, req interface{}) (*Data, error) {
+
+	var matchData MatchData
+
+	err := mapstructure.Decode(req, &matchData)
+	if err != nil {
+		hlog.Error(err)
+		return nil, err
+	}
+
+	WsConnManager.SetStatus(matchData.UserId, Matching)
 
 	var match *game.MatchResp
-	var err error
 
 	delay := constants.MatchInitialDelay
 	retryCount := 0
 
 	for match == nil || match.MatchedUserId == 0 {
 		match, err = rpc.Match(ctx, &game.MatchReq{
-			UserId: msg.UserId,
+			UserId: matchData.UserId,
 		})
 
 		if err != nil {
@@ -42,8 +56,8 @@ func MatchHandle(ctx context.Context, msg MatchData) (*Data, error) {
 		}
 	}
 
-	WsConnManager.SetStatus(msg.UserId, Gaming)
-	WsConnManager.SetOpponent(msg.UserId, match.MatchedUserId)
+	WsConnManager.SetStatus(matchData.UserId, Gaming)
+	WsConnManager.SetOpponent(matchData.UserId, match.MatchedUserId)
 
 	return &Data{
 		Action: MatchAction,
@@ -53,9 +67,20 @@ func MatchHandle(ctx context.Context, msg MatchData) (*Data, error) {
 	}, nil
 }
 
-func MoveHandle(ctx context.Context, msg MoveData) (*Data, error) {
+type MoveHandler struct{}
+
+func (h *MoveHandler) Handle(ctx context.Context, req interface{}) (*Data, error) {
+
+	var moveData MoveData
+
+	err := mapstructure.Decode(req, &moveData)
+	if err != nil {
+		hlog.Error(err)
+		return nil, err
+	}
+
 	return &Data{
 		Action: MoveAction,
-		Data:   msg,
+		Data:   moveData,
 	}, nil
 }
