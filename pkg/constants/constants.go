@@ -44,4 +44,9 @@ const (
 	MuxConnection  = 1
 	RPCTimeout     = 3 * time.Second
 	ConnectTimeout = 50 * time.Millisecond
+
+	// match
+
+	MatchInitialDelay  = 50 * time.Millisecond
+	MaxMatchRetryDelay = 20 * time.Second
 )

@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/redis/go-redis/v9"
 	"math"
@@ -50,6 +51,7 @@ func (s *GameService) Match(req *game.MatchReq) (*game.MatchResp, error) {
 		return nil, err
 	}
 
+	// 匹配到结果
 	if len(matchedUsers) > 0 {
 
 		minGap := math.MaxFloat64
@@ -57,6 +59,7 @@ func (s *GameService) Match(req *game.MatchReq) (*game.MatchResp, error) {
 		for _, m := range matchedUsers {
 			matchedUserId, err := strconv.ParseInt(m.Member.(string), 10, 64)
 			if err != nil {
+				hlog.Error(err)
 				return nil, err
 			}
 
@@ -66,10 +69,12 @@ func (s *GameService) Match(req *game.MatchReq) (*game.MatchResp, error) {
 			}
 		}
 
-		err = cache.Rdb.ZRem(s.ctx, "match", userInfo.User.Id, resp.MatchedUserId).Err()
-		if err != nil {
-			klog.Error(err)
-			return nil, err
+		if resp.MatchedUserId != 0 {
+			err = cache.Rdb.ZRem(s.ctx, "match", resp.MatchedUserId).Err()
+			if err != nil {
+				klog.Error(err)
+				return nil, err
+			}
 		}
 
 		return resp, nil

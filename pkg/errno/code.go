@@ -17,7 +17,8 @@ const (
 	ParamErrorCode             = 10002 // 参数错误
 	AuthorizationFailedErrCode = 10003 // 鉴权失败
 	UnexpectedTypeErrorCode    = 10004 // 未知类型
-	WsConnectionErrorCode      = 10005
+
+	MatchTimeoutErrorCode = 20001
 )
 
 var (
@@ -33,7 +34,7 @@ var (
 	UserExistedError  = NewErrNo(ParamErrorCode, "user existed")
 	UserNotFoundError = NewErrNo(ParamErrorCode, "user not found")
 
-	// WebSocket
+	// Websocket
 
-	WsConnectionClosed = NewErrNo(WsConnectionErrorCode, "websocket connection closed")
+	MatchTimeoutError = NewErrNo(MatchTimeoutErrorCode, "match timeout")
 )

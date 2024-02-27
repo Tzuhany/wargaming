@@ -10,6 +10,7 @@ import (
 	consulapi "github.com/hashicorp/consul/api"
 	"github.com/hertz-contrib/registry/consul"
 	"wargaming/cmd/interact/biz/rpc"
+	"wargaming/cmd/interact/biz/ws"
 	"wargaming/config"
 	"wargaming/pkg/constants"
 	"wargaming/pkg/mw"
@@ -27,6 +28,8 @@ func Init() {
 	tracer.InitJaeger(constants.InteractService)
 
 	rpc.Init()
+
+	ws.Init()
 
 	// log
 	hlog.SetLevel(hlog.LevelDebug)

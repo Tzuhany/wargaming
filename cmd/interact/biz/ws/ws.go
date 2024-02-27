@@ -15,8 +15,8 @@ type Connection struct {
 }
 
 type Message struct {
-	dataType int
-	data     []byte
+	MsgType int
+	MsgData []byte
 }
 
 func InitWsConnection(wsConn *websocket.Conn) *Connection {
@@ -33,14 +33,14 @@ func InitWsConnection(wsConn *websocket.Conn) *Connection {
 	return conn
 }
 
-func (conn *Connection) ReadMessage() []byte {
+func (conn *Connection) ReadMessage() *Message {
 	var msg *Message
 
 	select {
 	case msg = <-conn.inChan:
 	}
 
-	return msg.data
+	return msg
 }
 
 func (conn *Connection) WriteMessage(msg *Message) {
@@ -69,8 +69,8 @@ func (conn *Connection) readLoop() {
 		}
 
 		msg := &Message{
-			dataType: mt,
-			data:     m,
+			MsgType: mt,
+			MsgData: m,
 		}
 
 		select {
@@ -90,7 +90,7 @@ func (conn *Connection) writeLoop() {
 
 	for {
 		msg = <-conn.outChan
-		if err = conn.wsConn.WriteMessage(msg.dataType, msg.data); err != nil {
+		if err = conn.wsConn.WriteMessage(msg.MsgType, msg.MsgData); err != nil {
 			goto ERR
 		}
 	}

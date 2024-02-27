@@ -2,16 +2,16 @@ package ws
 
 import (
 	"context"
+	"github.com/bytedance/sonic"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/hertz-contrib/websocket"
-	"strconv"
-	"time"
-	"wargaming/cmd/interact/biz/rpc"
-	"wargaming/kitex_gen/game"
+	"github.com/mitchellh/mapstructure"
+	"wargaming/cmd/interact/biz/model/interact"
+	"wargaming/cmd/interact/biz/pack"
 )
 
-func Interact(ctx context.Context, c *app.RequestContext) {
+func Interact(ctx context.Context, c *app.RequestContext, req *interact.InteractReq) {
 	var upgrader = websocket.HertzUpgrader{
 		CheckOrigin: func(ctx *app.RequestContext) bool {
 			return true
@@ -22,36 +22,87 @@ func Interact(ctx context.Context, c *app.RequestContext) {
 	err := upgrader.Upgrade(c, func(conn *websocket.Conn) {
 		wsConn := InitWsConnection(conn)
 
-		var data []byte
+		WsConnManager.Put(req.UserId, &MetaData{
+			Conn:   wsConn,
+			Status: Free,
+		})
 
+		var msg *Message
+		var data Data
 		for {
-			data = wsConn.ReadMessage()
+			msg = wsConn.ReadMessage()
 
-			userId, err := strconv.ParseInt(string(data), 10, 64)
+			err := sonic.Unmarshal(msg.MsgData, &data)
 			if err != nil {
 				hlog.Error(err)
 				return
 			}
 
-			var match *game.MatchResp
+			switch data.Action {
+			case MatchAction:
+				mp := data.Data.(map[string]interface{})
+				m := MatchData{}
 
-			for match == nil || match.MatchedUserId == 0 {
-				match, err = rpc.Match(ctx, &game.MatchReq{
-					UserId: userId,
+				err := mapstructure.Decode(mp, &m)
+				if err != nil {
+					hlog.Error(err)
+					return
+				}
+
+				matchRet, err := MatchHandle(ctx, m)
+				if err != nil {
+					hlog.Error(err)
+					return
+				}
+
+				matchRet.Base = pack.BuildBaseResp(err)
+
+				marshal, err := sonic.Marshal(matchRet)
+				if err != nil {
+					hlog.Error(err)
+					return
+				}
+
+				wsConn.WriteMessage(&Message{
+					MsgType: msg.MsgType,
+					MsgData: marshal,
 				})
-				time.Sleep(1 * time.Second)
+
+			case MoveAction:
+				mp := data.Data.(map[string]interface{})
+				m := MoveData{}
+
+				err := mapstructure.Decode(mp, &m)
+				if err != nil {
+					hlog.Error(err)
+					return
+				}
+
+				moveRet, err := MoveHandle(ctx, m)
+				if err != nil {
+					hlog.Error(err)
+					return
+				}
+
+				moveRet.Base = pack.BuildBaseResp(err)
+
+				marshal, err := sonic.Marshal(moveRet)
+				if err != nil {
+					hlog.Error(err)
+					return
+				}
+
+				// 获取对手的连接
+				opponentConn := WsConnManager.GetOpponentMetaData(req.UserId).Conn
+
+				opponentConn.WriteMessage(&Message{
+					MsgType: msg.MsgType,
+					MsgData: marshal,
+				})
 			}
-
-			hlog.Info("match success! -> ", match.MatchedUserId)
-
-			wsConn.WriteMessage(&Message{
-				dataType: websocket.TextMessage,
-				data:     []byte(strconv.FormatInt(match.MatchedUserId, 10)),
-			})
 		}
 	})
 	if err != nil {
 		hlog.Error(err)
-		return
 	}
 }
