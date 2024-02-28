@@ -21,18 +21,15 @@ func Interact(ctx context.Context, c *app.RequestContext, req *interact.Interact
 	processingCenter.RegisterHandler(MoveAction, &MoveHandler{})
 
 	err := upgrader.Upgrade(c, func(conn *websocket.Conn) {
-		wsConn := InitWsConnection(conn)
+		client := NewClient(conn)
 
-		WsConnManager.Put(req.UserId, &MetaData{
-			Conn:   wsConn,
-			Status: Free,
-		})
+		WsManager.Put(req.UserId, client)
 
-		var msg *Message
+		var msg []byte
 		for {
-			msg = wsConn.ReadMessage()
+			msg = client.ReadMessage()
 
-			if err := processingCenter.ProcessMessage(ctx, wsConn, msg, req.UserId); err != nil {
+			if err := processingCenter.ProcessMessage(ctx, msg); err != nil {
 				return
 			}
 		}

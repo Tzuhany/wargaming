@@ -12,22 +12,22 @@ import (
 )
 
 type ActionHandler interface {
-	Handle(ctx context.Context, req interface{}) (*Data, error)
+	Handle(ctx context.Context, req *Message) (*Message, error)
 }
 
 type MatchHandler struct{}
 
-func (h *MatchHandler) Handle(ctx context.Context, req interface{}) (*Data, error) {
+func (h *MatchHandler) Handle(ctx context.Context, req *Message) (*Message, error) {
 
-	var matchData MatchData
+	var matchData MatchReq
 
-	err := mapstructure.Decode(req, &matchData)
+	err := mapstructure.Decode(req.Data, &matchData)
 	if err != nil {
 		hlog.Error(err)
 		return nil, err
 	}
 
-	WsConnManager.SetStatus(matchData.UserId, Matching)
+	WsManager.Get(req.From).SetStatus(Matching)
 
 	var match *game.MatchResp
 
@@ -56,20 +56,21 @@ func (h *MatchHandler) Handle(ctx context.Context, req interface{}) (*Data, erro
 		}
 	}
 
-	WsConnManager.SetStatus(matchData.UserId, Gaming)
-	WsConnManager.SetOpponent(matchData.UserId, match.MatchedUserId)
+	WsManager.Get(req.From).SetStatus(Gaming)
 
-	return &Data{
+	return &Message{
+		From:   req.From,
+		To:     req.To,
 		Action: MatchAction,
-		Data: MatchData{
-			UserId: match.MatchedUserId,
+		Data: MatchResp{
+			MatchedUserId: match.MatchedUserId,
 		},
 	}, nil
 }
 
 type MoveHandler struct{}
 
-func (h *MoveHandler) Handle(ctx context.Context, req interface{}) (*Data, error) {
+func (h *MoveHandler) Handle(ctx context.Context, req *Message) (*Message, error) {
 
 	var moveData MoveData
 
@@ -79,7 +80,9 @@ func (h *MoveHandler) Handle(ctx context.Context, req interface{}) (*Data, error
 		return nil, err
 	}
 
-	return &Data{
+	return &Message{
+		From:   req.From,
+		To:     req.To,
 		Action: MoveAction,
 		Data:   moveData,
 	}, nil

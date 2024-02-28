@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/bytedance/sonic"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
-	"wargaming/cmd/interact/biz/pack"
+	"github.com/mitchellh/mapstructure"
 )
 
 type MessageProcessingCenter struct {
@@ -21,34 +21,34 @@ func (mpc *MessageProcessingCenter) RegisterHandler(action int, handler ActionHa
 	mpc.handlers[action] = handler
 }
 
-func (mpc *MessageProcessingCenter) ProcessMessage(ctx context.Context, wsConn *Connection, msg *Message, userId int64) error {
+func (mpc *MessageProcessingCenter) ProcessMessage(ctx context.Context, msg []byte) error {
 	// 解析消息数据
 	var requestData interface{}
-	err := sonic.Unmarshal(msg.MsgData, &requestData)
+	err := sonic.Unmarshal(msg, &requestData)
 	if err != nil {
 		hlog.Error(err)
 		return err
 	}
 
-	action := requestData.(map[string]interface{})["action"].(float64)
+	var m Message
 
-	handler, exists := mpc.handlers[int(action)]
+	err = mapstructure.Decode(requestData, &m)
+	if err != nil {
+		hlog.Error(err)
+		return err
+	}
+
+	handler, exists := mpc.handlers[m.Action]
 	if !exists {
 		return nil
 	}
 
-	if action != MatchAction {
-		wsConn = WsConnManager.GetOpponentMetaData(userId).Conn
-	}
-
 	// 处理消息
-	response, err := handler.Handle(ctx, requestData)
+	response, err := handler.Handle(ctx, &m)
 	if err != nil {
 		hlog.Error(err)
 		return err
 	}
-
-	response.Base = pack.BuildBaseResp(err)
 
 	// 发送响应
 	marshal, err := sonic.Marshal(response)
@@ -57,10 +57,12 @@ func (mpc *MessageProcessingCenter) ProcessMessage(ctx context.Context, wsConn *
 		return err
 	}
 
-	wsConn.WriteMessage(&Message{
-		MsgType: msg.MsgType,
-		MsgData: marshal,
-	})
+	// 获取发送目标
+	to := requestData.(map[string]interface{})["to"].(float64)
+
+	client := WsManager.Get(int64(to))
+
+	client.WriteMessage(marshal)
 
 	return nil
 }

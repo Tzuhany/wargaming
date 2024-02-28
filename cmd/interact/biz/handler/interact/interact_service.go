@@ -4,11 +4,10 @@ package interact
 
 import (
 	"context"
+	"github.com/cloudwego/hertz/pkg/app"
 	"wargaming/cmd/api/biz/pack"
 	"wargaming/cmd/interact/biz/model/interact"
 	"wargaming/cmd/interact/biz/ws"
-
-	"github.com/cloudwego/hertz/pkg/app"
 )
 
 // Interact .

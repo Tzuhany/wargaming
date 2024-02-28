@@ -29,7 +29,7 @@ func Init() {
 
 	rpc.Init()
 
-	ws.Init()
+	ws.InitHub()
 
 	// log
 	hlog.SetLevel(hlog.LevelDebug)
