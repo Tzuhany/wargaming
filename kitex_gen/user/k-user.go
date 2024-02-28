@@ -860,7 +860,7 @@ func (p *RegisterResp) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWr
 
 func (p *RegisterResp) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "userId", thrift.I64, 2)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "user_id", thrift.I64, 2)
 	offset += bthrift.Binary.WriteI64(buf[offset:], p.UserId)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
@@ -886,7 +886,7 @@ func (p *RegisterResp) field1Length() int {
 
 func (p *RegisterResp) field2Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("userId", thrift.I64, 2)
+	l += bthrift.Binary.FieldBeginLength("user_id", thrift.I64, 2)
 	l += bthrift.Binary.I64Length(p.UserId)
 
 	l += bthrift.Binary.FieldEndLength()
@@ -1298,7 +1298,7 @@ func (p *LoginResp) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWrite
 
 func (p *LoginResp) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "userId", thrift.I64, 2)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "user_id", thrift.I64, 2)
 	offset += bthrift.Binary.WriteI64(buf[offset:], p.UserId)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
@@ -1324,7 +1324,7 @@ func (p *LoginResp) field1Length() int {
 
 func (p *LoginResp) field2Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("userId", thrift.I64, 2)
+	l += bthrift.Binary.FieldBeginLength("user_id", thrift.I64, 2)
 	l += bthrift.Binary.I64Length(p.UserId)
 
 	l += bthrift.Binary.FieldEndLength()
@@ -1462,7 +1462,7 @@ func (p *UserInfoReq) BLength() int {
 
 func (p *UserInfoReq) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "userId", thrift.I64, 1)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "user_id", thrift.I64, 1)
 	offset += bthrift.Binary.WriteI64(buf[offset:], p.UserId)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
@@ -1471,7 +1471,7 @@ func (p *UserInfoReq) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWri
 
 func (p *UserInfoReq) field1Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("userId", thrift.I64, 1)
+	l += bthrift.Binary.FieldBeginLength("user_id", thrift.I64, 1)
 	l += bthrift.Binary.I64Length(p.UserId)
 
 	l += bthrift.Binary.FieldEndLength()

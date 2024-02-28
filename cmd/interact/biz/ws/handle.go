@@ -36,7 +36,7 @@ func (h *MatchHandler) Handle(ctx context.Context, req *Message) (*Message, erro
 
 	for match == nil || match.MatchedUserId == 0 {
 		match, err = rpc.Match(ctx, &game.MatchReq{
-			UserId: matchData.UserId,
+			UserId: matchData.UserID,
 		})
 
 		if err != nil {
@@ -63,7 +63,7 @@ func (h *MatchHandler) Handle(ctx context.Context, req *Message) (*Message, erro
 		To:     req.To,
 		Action: MatchAction,
 		Data: MatchResp{
-			MatchedUserId: match.MatchedUserId,
+			MatchedUserID: match.MatchedUserId,
 		},
 	}, nil
 }

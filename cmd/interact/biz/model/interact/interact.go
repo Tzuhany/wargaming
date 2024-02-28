@@ -204,26 +204,26 @@ func (p *BaseResp) String() string {
 
 // websocket
 type InteractReq struct {
-	UserId int64 `thrift:"userId,1,required" form:"userId,required" json:"userId,required" query:"userId,required"`
+	UserID int64 `thrift:"user_id,1,required" form:"user_id,required" json:"user_id,required" query:"user_id,required"`
 }
 
 func NewInteractReq() *InteractReq {
 	return &InteractReq{}
 }
 
-func (p *InteractReq) GetUserId() (v int64) {
-	return p.UserId
+func (p *InteractReq) GetUserID() (v int64) {
+	return p.UserID
 }
 
 var fieldIDToName_InteractReq = map[int16]string{
-	1: "userId",
+	1: "user_id",
 }
 
 func (p *InteractReq) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetUserId bool = false
+	var issetUserID bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -244,7 +244,7 @@ func (p *InteractReq) Read(iprot thrift.TProtocol) (err error) {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
-				issetUserId = true
+				issetUserID = true
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
@@ -261,7 +261,7 @@ func (p *InteractReq) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
-	if !issetUserId {
+	if !issetUserID {
 		fieldId = 1
 		goto RequiredFieldNotSetError
 	}
@@ -288,7 +288,7 @@ func (p *InteractReq) ReadField1(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
-		p.UserId = v
+		p.UserID = v
 	}
 	return nil
 }
@@ -322,10 +322,10 @@ WriteStructEndError:
 }
 
 func (p *InteractReq) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("userId", thrift.I64, 1); err != nil {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.UserId); err != nil {
+	if err := oprot.WriteI64(p.UserID); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {

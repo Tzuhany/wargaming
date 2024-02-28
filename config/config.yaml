@@ -32,21 +32,21 @@ services:
     name: api
     load-balance: false
     addr:
-      - 172.20.242.130:10001
+      - 172.29.214.11:10001
   user:
     name: user
     load-balance: false
     addr:
-      - 172.20.242.130:10002
+      - 172.29.214.11:10002
 
   game:
     name: interact
     load-balance: false
     addr:
-      - 172.20.242.130:10003
+      - 172.29.214.11:10003
 
   interact:
     name: game
     load-balance: false
     addr:
-      - 172.20.242.130:10004
+      - 172.29.214.11:10004

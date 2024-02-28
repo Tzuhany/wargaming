@@ -1,10 +1,9 @@
 package pack
 
 import (
-	"wargaming/pkg/errno"
-
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"wargaming/pkg/errno"
 )
 
 type Response struct {

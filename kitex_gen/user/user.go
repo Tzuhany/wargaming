@@ -777,7 +777,7 @@ func (p *RegisterReq) Field2DeepEqual(src string) bool {
 
 type RegisterResp struct {
 	Base   *BaseResp `thrift:"base,1,required" frugal:"1,required,BaseResp" json:"base"`
-	UserId int64     `thrift:"userId,2,required" frugal:"2,required,i64" json:"userId"`
+	UserId int64     `thrift:"user_id,2,required" frugal:"2,required,i64" json:"user_id"`
 	Token  string    `thrift:"token,3,required" frugal:"3,required,string" json:"token"`
 }
 
@@ -817,7 +817,7 @@ func (p *RegisterResp) SetToken(val string) {
 
 var fieldIDToName_RegisterResp = map[int16]string{
 	1: "base",
-	2: "userId",
+	2: "user_id",
 	3: "token",
 }
 
@@ -999,7 +999,7 @@ WriteFieldEndError:
 }
 
 func (p *RegisterResp) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("userId", thrift.I64, 2); err != nil {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 2); err != nil {
 		goto WriteFieldBeginError
 	}
 	if err := oprot.WriteI64(p.UserId); err != nil {
@@ -1316,7 +1316,7 @@ func (p *LoginReq) Field2DeepEqual(src string) bool {
 
 type LoginResp struct {
 	Base   *BaseResp `thrift:"base,1,required" frugal:"1,required,BaseResp" json:"base"`
-	UserId int64     `thrift:"userId,2,required" frugal:"2,required,i64" json:"userId"`
+	UserId int64     `thrift:"user_id,2,required" frugal:"2,required,i64" json:"user_id"`
 	Token  string    `thrift:"token,3,required" frugal:"3,required,string" json:"token"`
 }
 
@@ -1356,7 +1356,7 @@ func (p *LoginResp) SetToken(val string) {
 
 var fieldIDToName_LoginResp = map[int16]string{
 	1: "base",
-	2: "userId",
+	2: "user_id",
 	3: "token",
 }
 
@@ -1538,7 +1538,7 @@ WriteFieldEndError:
 }
 
 func (p *LoginResp) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("userId", thrift.I64, 2); err != nil {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 2); err != nil {
 		goto WriteFieldBeginError
 	}
 	if err := oprot.WriteI64(p.UserId); err != nil {
@@ -1620,7 +1620,7 @@ func (p *LoginResp) Field3DeepEqual(src string) bool {
 }
 
 type UserInfoReq struct {
-	UserId int64 `thrift:"userId,1,required" frugal:"1,required,i64" json:"userId"`
+	UserId int64 `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
 }
 
 func NewUserInfoReq() *UserInfoReq {
@@ -1639,7 +1639,7 @@ func (p *UserInfoReq) SetUserId(val int64) {
 }
 
 var fieldIDToName_UserInfoReq = map[int16]string{
-	1: "userId",
+	1: "user_id",
 }
 
 func (p *UserInfoReq) Read(iprot thrift.TProtocol) (err error) {
@@ -1745,7 +1745,7 @@ WriteStructEndError:
 }
 
 func (p *UserInfoReq) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("userId", thrift.I64, 1); err != nil {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
 	if err := oprot.WriteI64(p.UserId); err != nil {

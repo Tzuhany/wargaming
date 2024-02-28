@@ -15,26 +15,19 @@ struct Point {
 // base
 
 struct MatchReq {
-    1: required i64 userId,
+    1: required i64 user_id,
 }
 
 struct MatchResp {
     1: required BaseResp base,
-    2: required i64 matchedUserId,
+    2: required i64 matched_user_id,
 }
-
-//struct MoveReq {
-//    1: required Point orginPos,         // 原始位置
-//    2: required Point targetPos,        // 目标位置
-//    3: optional list<Point> obstacle,   // 障碍物位置
-//    4: required list<Point> corner,     // 四角点坐标
-//}
 
 struct MoveReq {
     1: required list<i64> cells,
     2: required list<i64> obstacle,
-    3: required i64 targetCell,
-    4: required i64 originCell,
+    3: required i64 target_cell,
+    4: required i64 origin_cell,
 }
 
 struct MoveResp {

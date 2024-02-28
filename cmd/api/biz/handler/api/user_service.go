@@ -71,7 +71,7 @@ func Login(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp.UserId = rpcResp.UserId
+	resp.UserID = rpcResp.UserId
 	resp.Token = rpcResp.Token
 
 	pack.SendResponse(c, resp)
@@ -95,7 +95,7 @@ func UserInfo(ctx context.Context, c *app.RequestContext) {
 	resp := new(api.UserInfoResp)
 
 	rpcResp, err := rpc.UserInfo(ctx, &user.UserInfoReq{
-		UserId: req.UserId,
+		UserId: req.UserID,
 	})
 	if err != nil {
 		pack.SendFailResponse(c, err)

@@ -478,7 +478,7 @@ func (p *Point) Field2DeepEqual(src float64) bool {
 }
 
 type MatchReq struct {
-	UserId int64 `thrift:"userId,1,required" frugal:"1,required,i64" json:"userId"`
+	UserId int64 `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
 }
 
 func NewMatchReq() *MatchReq {
@@ -497,7 +497,7 @@ func (p *MatchReq) SetUserId(val int64) {
 }
 
 var fieldIDToName_MatchReq = map[int16]string{
-	1: "userId",
+	1: "user_id",
 }
 
 func (p *MatchReq) Read(iprot thrift.TProtocol) (err error) {
@@ -603,7 +603,7 @@ WriteStructEndError:
 }
 
 func (p *MatchReq) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("userId", thrift.I64, 1); err != nil {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
 	if err := oprot.WriteI64(p.UserId); err != nil {
@@ -649,7 +649,7 @@ func (p *MatchReq) Field1DeepEqual(src int64) bool {
 
 type MatchResp struct {
 	Base          *BaseResp `thrift:"base,1,required" frugal:"1,required,BaseResp" json:"base"`
-	MatchedUserId int64     `thrift:"matchedUserId,2,required" frugal:"2,required,i64" json:"matchedUserId"`
+	MatchedUserId int64     `thrift:"matched_user_id,2,required" frugal:"2,required,i64" json:"matched_user_id"`
 }
 
 func NewMatchResp() *MatchResp {
@@ -681,7 +681,7 @@ func (p *MatchResp) SetMatchedUserId(val int64) {
 
 var fieldIDToName_MatchResp = map[int16]string{
 	1: "base",
-	2: "matchedUserId",
+	2: "matched_user_id",
 }
 
 func (p *MatchResp) IsSetBase() bool {
@@ -834,7 +834,7 @@ WriteFieldEndError:
 }
 
 func (p *MatchResp) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("matchedUserId", thrift.I64, 2); err != nil {
+	if err = oprot.WriteFieldBegin("matched_user_id", thrift.I64, 2); err != nil {
 		goto WriteFieldBeginError
 	}
 	if err := oprot.WriteI64(p.MatchedUserId); err != nil {
@@ -891,8 +891,8 @@ func (p *MatchResp) Field2DeepEqual(src int64) bool {
 type MoveReq struct {
 	Cells      []int64 `thrift:"cells,1,required" frugal:"1,required,list<i64>" json:"cells"`
 	Obstacle   []int64 `thrift:"obstacle,2,required" frugal:"2,required,list<i64>" json:"obstacle"`
-	TargetCell int64   `thrift:"targetCell,3,required" frugal:"3,required,i64" json:"targetCell"`
-	OriginCell int64   `thrift:"originCell,4,required" frugal:"4,required,i64" json:"originCell"`
+	TargetCell int64   `thrift:"target_cell,3,required" frugal:"3,required,i64" json:"target_cell"`
+	OriginCell int64   `thrift:"origin_cell,4,required" frugal:"4,required,i64" json:"origin_cell"`
 }
 
 func NewMoveReq() *MoveReq {
@@ -934,8 +934,8 @@ func (p *MoveReq) SetOriginCell(val int64) {
 var fieldIDToName_MoveReq = map[int16]string{
 	1: "cells",
 	2: "obstacle",
-	3: "targetCell",
-	4: "originCell",
+	3: "target_cell",
+	4: "origin_cell",
 }
 
 func (p *MoveReq) Read(iprot thrift.TProtocol) (err error) {
@@ -1201,7 +1201,7 @@ WriteFieldEndError:
 }
 
 func (p *MoveReq) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("targetCell", thrift.I64, 3); err != nil {
+	if err = oprot.WriteFieldBegin("target_cell", thrift.I64, 3); err != nil {
 		goto WriteFieldBeginError
 	}
 	if err := oprot.WriteI64(p.TargetCell); err != nil {
@@ -1218,7 +1218,7 @@ WriteFieldEndError:
 }
 
 func (p *MoveReq) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("originCell", thrift.I64, 4); err != nil {
+	if err = oprot.WriteFieldBegin("origin_cell", thrift.I64, 4); err != nil {
 		goto WriteFieldBeginError
 	}
 	if err := oprot.WriteI64(p.OriginCell); err != nil {

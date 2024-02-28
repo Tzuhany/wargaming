@@ -6,11 +6,11 @@ const (
 )
 
 type MatchReq struct {
-	UserId int64 `json:"userId"`
+	UserID int64 `json:"user_id"`
 }
 
 type MatchResp struct {
-	MatchedUserId int64 `json:"matchedUserId"`
+	MatchedUserID int64 `json:"matched_user_id"`
 }
 
 type MoveData struct {

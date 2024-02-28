@@ -23,7 +23,7 @@ func Interact(ctx context.Context, c *app.RequestContext, req *interact.Interact
 	err := upgrader.Upgrade(c, func(conn *websocket.Conn) {
 		client := NewClient(conn)
 
-		WsManager.Put(req.UserId, client)
+		WsManager.Put(req.UserID, client)
 
 		var msg []byte
 		for {

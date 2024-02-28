@@ -18,7 +18,7 @@ struct RegisterReq {
 
 struct RegisterResp {
     1: required BaseResp base,
-    2: required i64 userId,
+    2: required i64 user_id,
     3: required string token,
 }
 
@@ -29,12 +29,12 @@ struct LoginReq {
 
 struct LoginResp {
     1: required BaseResp base,
-    2: required i64 userId,
+    2: required i64 user_id,
     3: required string token
 }
 
 struct UserInfoReq {
-    1: required i64 userId,
+    1: required i64 user_id,
 }
 
 struct UserInfoResp {

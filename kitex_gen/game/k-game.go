@@ -531,7 +531,7 @@ func (p *MatchReq) BLength() int {
 
 func (p *MatchReq) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "userId", thrift.I64, 1)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "user_id", thrift.I64, 1)
 	offset += bthrift.Binary.WriteI64(buf[offset:], p.UserId)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
@@ -540,7 +540,7 @@ func (p *MatchReq) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter
 
 func (p *MatchReq) field1Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("userId", thrift.I64, 1)
+	l += bthrift.Binary.FieldBeginLength("user_id", thrift.I64, 1)
 	l += bthrift.Binary.I64Length(p.UserId)
 
 	l += bthrift.Binary.FieldEndLength()
@@ -713,7 +713,7 @@ func (p *MatchResp) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWrite
 
 func (p *MatchResp) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "matchedUserId", thrift.I64, 2)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "matched_user_id", thrift.I64, 2)
 	offset += bthrift.Binary.WriteI64(buf[offset:], p.MatchedUserId)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
@@ -730,7 +730,7 @@ func (p *MatchResp) field1Length() int {
 
 func (p *MatchResp) field2Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("matchedUserId", thrift.I64, 2)
+	l += bthrift.Binary.FieldBeginLength("matched_user_id", thrift.I64, 2)
 	l += bthrift.Binary.I64Length(p.MatchedUserId)
 
 	l += bthrift.Binary.FieldEndLength()
@@ -1036,7 +1036,7 @@ func (p *MoveReq) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter)
 
 func (p *MoveReq) fastWriteField3(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "targetCell", thrift.I64, 3)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "target_cell", thrift.I64, 3)
 	offset += bthrift.Binary.WriteI64(buf[offset:], p.TargetCell)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
@@ -1045,7 +1045,7 @@ func (p *MoveReq) fastWriteField3(buf []byte, binaryWriter bthrift.BinaryWriter)
 
 func (p *MoveReq) fastWriteField4(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "originCell", thrift.I64, 4)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "origin_cell", thrift.I64, 4)
 	offset += bthrift.Binary.WriteI64(buf[offset:], p.OriginCell)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
@@ -1076,7 +1076,7 @@ func (p *MoveReq) field2Length() int {
 
 func (p *MoveReq) field3Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("targetCell", thrift.I64, 3)
+	l += bthrift.Binary.FieldBeginLength("target_cell", thrift.I64, 3)
 	l += bthrift.Binary.I64Length(p.TargetCell)
 
 	l += bthrift.Binary.FieldEndLength()
@@ -1085,7 +1085,7 @@ func (p *MoveReq) field3Length() int {
 
 func (p *MoveReq) field4Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("originCell", thrift.I64, 4)
+	l += bthrift.Binary.FieldBeginLength("origin_cell", thrift.I64, 4)
 	l += bthrift.Binary.I64Length(p.OriginCell)
 
 	l += bthrift.Binary.FieldEndLength()

@@ -8,7 +8,7 @@ struct BaseResp {
 // websocket
 
 struct InteractReq{
-    1: required i64 userId,
+    1: required i64 user_id,
 }
 
 struct InteractResp{}
