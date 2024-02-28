@@ -4,6 +4,8 @@ package main
 
 import (
 	"github.com/cloudwego/hertz/pkg/app/server/registry"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/cloudwego/kitex/pkg/klog"
 	consulapi "github.com/hashicorp/consul/api"
 	"github.com/hertz-contrib/registry/consul"
 	"wargaming/cmd/api/biz/rpc"
@@ -14,7 +16,6 @@ import (
 	"wargaming/pkg/utils"
 
 	"github.com/cloudwego/hertz/pkg/app/server"
-	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/hertz-contrib/gzip"
 )
 
@@ -30,7 +31,7 @@ func Init() {
 	tracer.InitJaeger(constants.ApiServiceName)
 
 	// set log
-	klog.SetLevel(klog.LevelDebug)
+	hlog.SetLevel(hlog.LevelDebug)
 }
 
 func main() {

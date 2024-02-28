@@ -1,9 +1,6 @@
 namespace go api
 
-struct BaseResp {
-    1: required i64 code,
-    2: required string msg,
-}
+struct NilResp {}
 
 // user
 
@@ -18,19 +15,17 @@ struct RegisterReq {
 }
 
 struct RegisterResp {
-    1: required BaseResp base,
-    2: required string token,
+    1: required string token,
 }
 
 struct LoginReq {
     1: required string username,
-    3: required string password,
+    2: required string password,
 }
 
 struct LoginResp {
-    1: required BaseResp base,
-    2: required i64 userId
-    3: required string token,
+    1: required i64 userId
+    2: required string token,
 }
 
 struct UserInfoReq {
@@ -38,8 +33,7 @@ struct UserInfoReq {
 }
 
 struct UserInfoResp {
-    1: required BaseResp base,
-    2: required User user,
+    1: required User user,
 }
 
 service UserService {

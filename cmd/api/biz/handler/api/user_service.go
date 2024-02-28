@@ -40,11 +40,6 @@ func Register(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp.Base = &api.BaseResp{
-		Code: rpcResp.Base.Code,
-		Msg:  rpcResp.Base.Msg,
-	}
-
 	resp.Token = rpcResp.Token
 
 	pack.SendResponse(c, resp)
@@ -76,11 +71,6 @@ func Login(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp.Base = &api.BaseResp{
-		Code: rpcResp.Base.Code,
-		Msg:  rpcResp.Base.Msg,
-	}
-
 	resp.UserId = rpcResp.UserId
 	resp.Token = rpcResp.Token
 
@@ -110,11 +100,6 @@ func UserInfo(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		pack.SendFailResponse(c, err)
 		return
-	}
-
-	resp.Base = &api.BaseResp{
-		Code: rpcResp.Base.Code,
-		Msg:  rpcResp.Base.Msg,
 	}
 
 	resp.User = &api.User{
