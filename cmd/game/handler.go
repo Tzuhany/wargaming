@@ -29,8 +29,8 @@ func (s *GameServiceImpl) Match(ctx context.Context, req *game.MatchReq) (resp *
 }
 
 // Move implements the GameServiceImpl interface.
-func (s *GameServiceImpl) Move(ctx context.Context, req *game.MoveReq) (resp *game.MoveResp, err error) {
-	resp = new(game.MoveResp)
+func (s *GameServiceImpl) Move(ctx context.Context, req *game.FindPathReq) (resp *game.FindPathResp, err error) {
+	resp = new(game.FindPathResp)
 
 	moveResp, err := service.NewGameService(ctx).Move(req)
 	if err != nil {

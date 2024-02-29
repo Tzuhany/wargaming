@@ -93,7 +93,7 @@ func (p *kClient) Match(ctx context.Context, req *game.MatchReq) (r *game.MatchR
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) Move(ctx context.Context, req *game.MoveReq) (r *game.MoveResp, err error) {
+func (p *kClient) Move(ctx context.Context, req *game.FindPathReq) (r *game.FindPathResp, err error) {
 	var _args game.GameServiceMoveArgs
 	_args.Req = req
 	var _result game.GameServiceMoveResult

@@ -243,240 +243,6 @@ func (p *BaseResp) Field2DeepEqual(src string) bool {
 	return true
 }
 
-type Point struct {
-	Lat float64 `thrift:"lat,1,required" frugal:"1,required,double" json:"lat"`
-	Lng float64 `thrift:"lng,2,required" frugal:"2,required,double" json:"lng"`
-}
-
-func NewPoint() *Point {
-	return &Point{}
-}
-
-func (p *Point) InitDefault() {
-	*p = Point{}
-}
-
-func (p *Point) GetLat() (v float64) {
-	return p.Lat
-}
-
-func (p *Point) GetLng() (v float64) {
-	return p.Lng
-}
-func (p *Point) SetLat(val float64) {
-	p.Lat = val
-}
-func (p *Point) SetLng(val float64) {
-	p.Lng = val
-}
-
-var fieldIDToName_Point = map[int16]string{
-	1: "lat",
-	2: "lng",
-}
-
-func (p *Point) Read(iprot thrift.TProtocol) (err error) {
-
-	var fieldTypeId thrift.TType
-	var fieldId int16
-	var issetLat bool = false
-	var issetLng bool = false
-
-	if _, err = iprot.ReadStructBegin(); err != nil {
-		goto ReadStructBeginError
-	}
-
-	for {
-		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
-		if err != nil {
-			goto ReadFieldBeginError
-		}
-		if fieldTypeId == thrift.STOP {
-			break
-		}
-
-		switch fieldId {
-		case 1:
-			if fieldTypeId == thrift.DOUBLE {
-				if err = p.ReadField1(iprot); err != nil {
-					goto ReadFieldError
-				}
-				issetLat = true
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
-		case 2:
-			if fieldTypeId == thrift.DOUBLE {
-				if err = p.ReadField2(iprot); err != nil {
-					goto ReadFieldError
-				}
-				issetLng = true
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
-		default:
-			if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
-		}
-		if err = iprot.ReadFieldEnd(); err != nil {
-			goto ReadFieldEndError
-		}
-	}
-	if err = iprot.ReadStructEnd(); err != nil {
-		goto ReadStructEndError
-	}
-
-	if !issetLat {
-		fieldId = 1
-		goto RequiredFieldNotSetError
-	}
-
-	if !issetLng {
-		fieldId = 2
-		goto RequiredFieldNotSetError
-	}
-	return nil
-ReadStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
-ReadFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_Point[fieldId]), err)
-SkipFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-
-ReadFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
-ReadStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-RequiredFieldNotSetError:
-	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_Point[fieldId]))
-}
-
-func (p *Point) ReadField1(iprot thrift.TProtocol) error {
-
-	if v, err := iprot.ReadDouble(); err != nil {
-		return err
-	} else {
-		p.Lat = v
-	}
-	return nil
-}
-func (p *Point) ReadField2(iprot thrift.TProtocol) error {
-
-	if v, err := iprot.ReadDouble(); err != nil {
-		return err
-	} else {
-		p.Lng = v
-	}
-	return nil
-}
-
-func (p *Point) Write(oprot thrift.TProtocol) (err error) {
-	var fieldId int16
-	if err = oprot.WriteStructBegin("Point"); err != nil {
-		goto WriteStructBeginError
-	}
-	if p != nil {
-		if err = p.writeField1(oprot); err != nil {
-			fieldId = 1
-			goto WriteFieldError
-		}
-		if err = p.writeField2(oprot); err != nil {
-			fieldId = 2
-			goto WriteFieldError
-		}
-	}
-	if err = oprot.WriteFieldStop(); err != nil {
-		goto WriteFieldStopError
-	}
-	if err = oprot.WriteStructEnd(); err != nil {
-		goto WriteStructEndError
-	}
-	return nil
-WriteStructBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
-WriteFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
-WriteFieldStopError:
-	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
-WriteStructEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
-}
-
-func (p *Point) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("lat", thrift.DOUBLE, 1); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteDouble(p.Lat); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
-}
-
-func (p *Point) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("lng", thrift.DOUBLE, 2); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteDouble(p.Lng); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
-}
-
-func (p *Point) String() string {
-	if p == nil {
-		return "<nil>"
-	}
-	return fmt.Sprintf("Point(%+v)", *p)
-
-}
-
-func (p *Point) DeepEqual(ano *Point) bool {
-	if p == ano {
-		return true
-	} else if p == nil || ano == nil {
-		return false
-	}
-	if !p.Field1DeepEqual(ano.Lat) {
-		return false
-	}
-	if !p.Field2DeepEqual(ano.Lng) {
-		return false
-	}
-	return true
-}
-
-func (p *Point) Field1DeepEqual(src float64) bool {
-
-	if p.Lat != src {
-		return false
-	}
-	return true
-}
-func (p *Point) Field2DeepEqual(src float64) bool {
-
-	if p.Lng != src {
-		return false
-	}
-	return true
-}
-
 type MatchReq struct {
 	UserId int64 `thrift:"user_id,1,required" frugal:"1,required,i64" json:"user_id"`
 }
@@ -888,57 +654,57 @@ func (p *MatchResp) Field2DeepEqual(src int64) bool {
 	return true
 }
 
-type MoveReq struct {
+type FindPathReq struct {
 	Cells      []int64 `thrift:"cells,1,required" frugal:"1,required,list<i64>" json:"cells"`
 	Obstacle   []int64 `thrift:"obstacle,2,required" frugal:"2,required,list<i64>" json:"obstacle"`
 	TargetCell int64   `thrift:"target_cell,3,required" frugal:"3,required,i64" json:"target_cell"`
 	OriginCell int64   `thrift:"origin_cell,4,required" frugal:"4,required,i64" json:"origin_cell"`
 }
 
-func NewMoveReq() *MoveReq {
-	return &MoveReq{}
+func NewFindPathReq() *FindPathReq {
+	return &FindPathReq{}
 }
 
-func (p *MoveReq) InitDefault() {
-	*p = MoveReq{}
+func (p *FindPathReq) InitDefault() {
+	*p = FindPathReq{}
 }
 
-func (p *MoveReq) GetCells() (v []int64) {
+func (p *FindPathReq) GetCells() (v []int64) {
 	return p.Cells
 }
 
-func (p *MoveReq) GetObstacle() (v []int64) {
+func (p *FindPathReq) GetObstacle() (v []int64) {
 	return p.Obstacle
 }
 
-func (p *MoveReq) GetTargetCell() (v int64) {
+func (p *FindPathReq) GetTargetCell() (v int64) {
 	return p.TargetCell
 }
 
-func (p *MoveReq) GetOriginCell() (v int64) {
+func (p *FindPathReq) GetOriginCell() (v int64) {
 	return p.OriginCell
 }
-func (p *MoveReq) SetCells(val []int64) {
+func (p *FindPathReq) SetCells(val []int64) {
 	p.Cells = val
 }
-func (p *MoveReq) SetObstacle(val []int64) {
+func (p *FindPathReq) SetObstacle(val []int64) {
 	p.Obstacle = val
 }
-func (p *MoveReq) SetTargetCell(val int64) {
+func (p *FindPathReq) SetTargetCell(val int64) {
 	p.TargetCell = val
 }
-func (p *MoveReq) SetOriginCell(val int64) {
+func (p *FindPathReq) SetOriginCell(val int64) {
 	p.OriginCell = val
 }
 
-var fieldIDToName_MoveReq = map[int16]string{
+var fieldIDToName_FindPathReq = map[int16]string{
 	1: "cells",
 	2: "obstacle",
 	3: "target_cell",
 	4: "origin_cell",
 }
 
-func (p *MoveReq) Read(iprot thrift.TProtocol) (err error) {
+func (p *FindPathReq) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -1035,7 +801,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_MoveReq[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FindPathReq[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -1044,10 +810,10 @@ ReadFieldEndError:
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 RequiredFieldNotSetError:
-	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_MoveReq[fieldId]))
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FindPathReq[fieldId]))
 }
 
-func (p *MoveReq) ReadField1(iprot thrift.TProtocol) error {
+func (p *FindPathReq) ReadField1(iprot thrift.TProtocol) error {
 	_, size, err := iprot.ReadListBegin()
 	if err != nil {
 		return err
@@ -1069,7 +835,7 @@ func (p *MoveReq) ReadField1(iprot thrift.TProtocol) error {
 	}
 	return nil
 }
-func (p *MoveReq) ReadField2(iprot thrift.TProtocol) error {
+func (p *FindPathReq) ReadField2(iprot thrift.TProtocol) error {
 	_, size, err := iprot.ReadListBegin()
 	if err != nil {
 		return err
@@ -1091,7 +857,7 @@ func (p *MoveReq) ReadField2(iprot thrift.TProtocol) error {
 	}
 	return nil
 }
-func (p *MoveReq) ReadField3(iprot thrift.TProtocol) error {
+func (p *FindPathReq) ReadField3(iprot thrift.TProtocol) error {
 
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
@@ -1100,7 +866,7 @@ func (p *MoveReq) ReadField3(iprot thrift.TProtocol) error {
 	}
 	return nil
 }
-func (p *MoveReq) ReadField4(iprot thrift.TProtocol) error {
+func (p *FindPathReq) ReadField4(iprot thrift.TProtocol) error {
 
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
@@ -1110,9 +876,9 @@ func (p *MoveReq) ReadField4(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *MoveReq) Write(oprot thrift.TProtocol) (err error) {
+func (p *FindPathReq) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("MoveReq"); err != nil {
+	if err = oprot.WriteStructBegin("FindPathReq"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -1150,7 +916,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *MoveReq) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *FindPathReq) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("cells", thrift.LIST, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -1175,7 +941,7 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *MoveReq) writeField2(oprot thrift.TProtocol) (err error) {
+func (p *FindPathReq) writeField2(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("obstacle", thrift.LIST, 2); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -1200,7 +966,7 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
-func (p *MoveReq) writeField3(oprot thrift.TProtocol) (err error) {
+func (p *FindPathReq) writeField3(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("target_cell", thrift.I64, 3); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -1217,7 +983,7 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
 }
 
-func (p *MoveReq) writeField4(oprot thrift.TProtocol) (err error) {
+func (p *FindPathReq) writeField4(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("origin_cell", thrift.I64, 4); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -1234,15 +1000,15 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
 }
 
-func (p *MoveReq) String() string {
+func (p *FindPathReq) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("MoveReq(%+v)", *p)
+	return fmt.Sprintf("FindPathReq(%+v)", *p)
 
 }
 
-func (p *MoveReq) DeepEqual(ano *MoveReq) bool {
+func (p *FindPathReq) DeepEqual(ano *FindPathReq) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -1263,7 +1029,7 @@ func (p *MoveReq) DeepEqual(ano *MoveReq) bool {
 	return true
 }
 
-func (p *MoveReq) Field1DeepEqual(src []int64) bool {
+func (p *FindPathReq) Field1DeepEqual(src []int64) bool {
 
 	if len(p.Cells) != len(src) {
 		return false
@@ -1276,7 +1042,7 @@ func (p *MoveReq) Field1DeepEqual(src []int64) bool {
 	}
 	return true
 }
-func (p *MoveReq) Field2DeepEqual(src []int64) bool {
+func (p *FindPathReq) Field2DeepEqual(src []int64) bool {
 
 	if len(p.Obstacle) != len(src) {
 		return false
@@ -1289,14 +1055,14 @@ func (p *MoveReq) Field2DeepEqual(src []int64) bool {
 	}
 	return true
 }
-func (p *MoveReq) Field3DeepEqual(src int64) bool {
+func (p *FindPathReq) Field3DeepEqual(src int64) bool {
 
 	if p.TargetCell != src {
 		return false
 	}
 	return true
 }
-func (p *MoveReq) Field4DeepEqual(src int64) bool {
+func (p *FindPathReq) Field4DeepEqual(src int64) bool {
 
 	if p.OriginCell != src {
 		return false
@@ -1304,48 +1070,48 @@ func (p *MoveReq) Field4DeepEqual(src int64) bool {
 	return true
 }
 
-type MoveResp struct {
+type FindPathResp struct {
 	Base *BaseResp `thrift:"base,1,required" frugal:"1,required,BaseResp" json:"base"`
 	Path []int64   `thrift:"path,2,required" frugal:"2,required,list<i64>" json:"path"`
 }
 
-func NewMoveResp() *MoveResp {
-	return &MoveResp{}
+func NewFindPathResp() *FindPathResp {
+	return &FindPathResp{}
 }
 
-func (p *MoveResp) InitDefault() {
-	*p = MoveResp{}
+func (p *FindPathResp) InitDefault() {
+	*p = FindPathResp{}
 }
 
-var MoveResp_Base_DEFAULT *BaseResp
+var FindPathResp_Base_DEFAULT *BaseResp
 
-func (p *MoveResp) GetBase() (v *BaseResp) {
+func (p *FindPathResp) GetBase() (v *BaseResp) {
 	if !p.IsSetBase() {
-		return MoveResp_Base_DEFAULT
+		return FindPathResp_Base_DEFAULT
 	}
 	return p.Base
 }
 
-func (p *MoveResp) GetPath() (v []int64) {
+func (p *FindPathResp) GetPath() (v []int64) {
 	return p.Path
 }
-func (p *MoveResp) SetBase(val *BaseResp) {
+func (p *FindPathResp) SetBase(val *BaseResp) {
 	p.Base = val
 }
-func (p *MoveResp) SetPath(val []int64) {
+func (p *FindPathResp) SetPath(val []int64) {
 	p.Path = val
 }
 
-var fieldIDToName_MoveResp = map[int16]string{
+var fieldIDToName_FindPathResp = map[int16]string{
 	1: "base",
 	2: "path",
 }
 
-func (p *MoveResp) IsSetBase() bool {
+func (p *FindPathResp) IsSetBase() bool {
 	return p.Base != nil
 }
 
-func (p *MoveResp) Read(iprot thrift.TProtocol) (err error) {
+func (p *FindPathResp) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -1412,7 +1178,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_MoveResp[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FindPathResp[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -1421,17 +1187,17 @@ ReadFieldEndError:
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 RequiredFieldNotSetError:
-	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_MoveResp[fieldId]))
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FindPathResp[fieldId]))
 }
 
-func (p *MoveResp) ReadField1(iprot thrift.TProtocol) error {
+func (p *FindPathResp) ReadField1(iprot thrift.TProtocol) error {
 	p.Base = NewBaseResp()
 	if err := p.Base.Read(iprot); err != nil {
 		return err
 	}
 	return nil
 }
-func (p *MoveResp) ReadField2(iprot thrift.TProtocol) error {
+func (p *FindPathResp) ReadField2(iprot thrift.TProtocol) error {
 	_, size, err := iprot.ReadListBegin()
 	if err != nil {
 		return err
@@ -1454,9 +1220,9 @@ func (p *MoveResp) ReadField2(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *MoveResp) Write(oprot thrift.TProtocol) (err error) {
+func (p *FindPathResp) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("MoveResp"); err != nil {
+	if err = oprot.WriteStructBegin("FindPathResp"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -1486,7 +1252,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *MoveResp) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *FindPathResp) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("base", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -1503,7 +1269,7 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *MoveResp) writeField2(oprot thrift.TProtocol) (err error) {
+func (p *FindPathResp) writeField2(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("path", thrift.LIST, 2); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -1528,15 +1294,15 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
-func (p *MoveResp) String() string {
+func (p *FindPathResp) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("MoveResp(%+v)", *p)
+	return fmt.Sprintf("FindPathResp(%+v)", *p)
 
 }
 
-func (p *MoveResp) DeepEqual(ano *MoveResp) bool {
+func (p *FindPathResp) DeepEqual(ano *FindPathResp) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -1551,14 +1317,14 @@ func (p *MoveResp) DeepEqual(ano *MoveResp) bool {
 	return true
 }
 
-func (p *MoveResp) Field1DeepEqual(src *BaseResp) bool {
+func (p *FindPathResp) Field1DeepEqual(src *BaseResp) bool {
 
 	if !p.Base.DeepEqual(src) {
 		return false
 	}
 	return true
 }
-func (p *MoveResp) Field2DeepEqual(src []int64) bool {
+func (p *FindPathResp) Field2DeepEqual(src []int64) bool {
 
 	if len(p.Path) != len(src) {
 		return false
@@ -1572,10 +1338,585 @@ func (p *MoveResp) Field2DeepEqual(src []int64) bool {
 	return true
 }
 
+type ViewComputeReq struct {
+	OperatorId int64 `thrift:"operator_id,1,required" frugal:"1,required,i64" json:"operator_id"`
+	NewCell_   int64 `thrift:"new_cell,2,required" frugal:"2,required,i64" json:"new_cell"`
+	UserId     int64 `thrift:"user_id,3,required" frugal:"3,required,i64" json:"user_id"`
+}
+
+func NewViewComputeReq() *ViewComputeReq {
+	return &ViewComputeReq{}
+}
+
+func (p *ViewComputeReq) InitDefault() {
+	*p = ViewComputeReq{}
+}
+
+func (p *ViewComputeReq) GetOperatorId() (v int64) {
+	return p.OperatorId
+}
+
+func (p *ViewComputeReq) GetNewCell_() (v int64) {
+	return p.NewCell_
+}
+
+func (p *ViewComputeReq) GetUserId() (v int64) {
+	return p.UserId
+}
+func (p *ViewComputeReq) SetOperatorId(val int64) {
+	p.OperatorId = val
+}
+func (p *ViewComputeReq) SetNewCell_(val int64) {
+	p.NewCell_ = val
+}
+func (p *ViewComputeReq) SetUserId(val int64) {
+	p.UserId = val
+}
+
+var fieldIDToName_ViewComputeReq = map[int16]string{
+	1: "operator_id",
+	2: "new_cell",
+	3: "user_id",
+}
+
+func (p *ViewComputeReq) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetOperatorId bool = false
+	var issetNewCell_ bool = false
+	var issetUserId bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetOperatorId = true
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetNewCell_ = true
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 3:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetUserId = true
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetOperatorId {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetNewCell_ {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetUserId {
+		fieldId = 3
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ViewComputeReq[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_ViewComputeReq[fieldId]))
+}
+
+func (p *ViewComputeReq) ReadField1(iprot thrift.TProtocol) error {
+
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.OperatorId = v
+	}
+	return nil
+}
+func (p *ViewComputeReq) ReadField2(iprot thrift.TProtocol) error {
+
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.NewCell_ = v
+	}
+	return nil
+}
+func (p *ViewComputeReq) ReadField3(iprot thrift.TProtocol) error {
+
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UserId = v
+	}
+	return nil
+}
+
+func (p *ViewComputeReq) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("ViewComputeReq"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *ViewComputeReq) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("operator_id", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.OperatorId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *ViewComputeReq) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("new_cell", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.NewCell_); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *ViewComputeReq) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UserId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
+func (p *ViewComputeReq) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ViewComputeReq(%+v)", *p)
+
+}
+
+func (p *ViewComputeReq) DeepEqual(ano *ViewComputeReq) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.OperatorId) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.NewCell_) {
+		return false
+	}
+	if !p.Field3DeepEqual(ano.UserId) {
+		return false
+	}
+	return true
+}
+
+func (p *ViewComputeReq) Field1DeepEqual(src int64) bool {
+
+	if p.OperatorId != src {
+		return false
+	}
+	return true
+}
+func (p *ViewComputeReq) Field2DeepEqual(src int64) bool {
+
+	if p.NewCell_ != src {
+		return false
+	}
+	return true
+}
+func (p *ViewComputeReq) Field3DeepEqual(src int64) bool {
+
+	if p.UserId != src {
+		return false
+	}
+	return true
+}
+
+type ViewComputeResp struct {
+	Base   *BaseResp       `thrift:"base,1,required" frugal:"1,required,BaseResp" json:"base"`
+	InView map[int64]int64 `thrift:"in_view,2,required" frugal:"2,required,map<i64:i64>" json:"in_view"`
+}
+
+func NewViewComputeResp() *ViewComputeResp {
+	return &ViewComputeResp{}
+}
+
+func (p *ViewComputeResp) InitDefault() {
+	*p = ViewComputeResp{}
+}
+
+var ViewComputeResp_Base_DEFAULT *BaseResp
+
+func (p *ViewComputeResp) GetBase() (v *BaseResp) {
+	if !p.IsSetBase() {
+		return ViewComputeResp_Base_DEFAULT
+	}
+	return p.Base
+}
+
+func (p *ViewComputeResp) GetInView() (v map[int64]int64) {
+	return p.InView
+}
+func (p *ViewComputeResp) SetBase(val *BaseResp) {
+	p.Base = val
+}
+func (p *ViewComputeResp) SetInView(val map[int64]int64) {
+	p.InView = val
+}
+
+var fieldIDToName_ViewComputeResp = map[int16]string{
+	1: "base",
+	2: "in_view",
+}
+
+func (p *ViewComputeResp) IsSetBase() bool {
+	return p.Base != nil
+}
+
+func (p *ViewComputeResp) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetBase bool = false
+	var issetInView bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetBase = true
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 2:
+			if fieldTypeId == thrift.MAP {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetInView = true
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetBase {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetInView {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ViewComputeResp[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_ViewComputeResp[fieldId]))
+}
+
+func (p *ViewComputeResp) ReadField1(iprot thrift.TProtocol) error {
+	p.Base = NewBaseResp()
+	if err := p.Base.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+func (p *ViewComputeResp) ReadField2(iprot thrift.TProtocol) error {
+	_, _, size, err := iprot.ReadMapBegin()
+	if err != nil {
+		return err
+	}
+	p.InView = make(map[int64]int64, size)
+	for i := 0; i < size; i++ {
+		var _key int64
+		if v, err := iprot.ReadI64(); err != nil {
+			return err
+		} else {
+			_key = v
+		}
+
+		var _val int64
+		if v, err := iprot.ReadI64(); err != nil {
+			return err
+		} else {
+			_val = v
+		}
+
+		p.InView[_key] = _val
+	}
+	if err := iprot.ReadMapEnd(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *ViewComputeResp) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("ViewComputeResp"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *ViewComputeResp) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("base", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Base.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *ViewComputeResp) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("in_view", thrift.MAP, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteMapBegin(thrift.I64, thrift.I64, len(p.InView)); err != nil {
+		return err
+	}
+	for k, v := range p.InView {
+		if err := oprot.WriteI64(k); err != nil {
+			return err
+		}
+		if err := oprot.WriteI64(v); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteMapEnd(); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *ViewComputeResp) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ViewComputeResp(%+v)", *p)
+
+}
+
+func (p *ViewComputeResp) DeepEqual(ano *ViewComputeResp) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Base) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.InView) {
+		return false
+	}
+	return true
+}
+
+func (p *ViewComputeResp) Field1DeepEqual(src *BaseResp) bool {
+
+	if !p.Base.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+func (p *ViewComputeResp) Field2DeepEqual(src map[int64]int64) bool {
+
+	if len(p.InView) != len(src) {
+		return false
+	}
+	for k, v := range p.InView {
+		_src := src[k]
+		if v != _src {
+			return false
+		}
+	}
+	return true
+}
+
 type GameService interface {
 	Match(ctx context.Context, req *MatchReq) (r *MatchResp, err error)
 
-	Move(ctx context.Context, req *MoveReq) (r *MoveResp, err error)
+	Move(ctx context.Context, req *FindPathReq) (r *FindPathResp, err error)
 }
 
 type GameServiceClient struct {
@@ -1613,7 +1954,7 @@ func (p *GameServiceClient) Match(ctx context.Context, req *MatchReq) (r *MatchR
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *GameServiceClient) Move(ctx context.Context, req *MoveReq) (r *MoveResp, err error) {
+func (p *GameServiceClient) Move(ctx context.Context, req *FindPathReq) (r *FindPathResp, err error) {
 	var _args GameServiceMoveArgs
 	_args.Req = req
 	var _result GameServiceMoveResult
@@ -1732,7 +2073,7 @@ func (p *gameServiceProcessorMove) Process(ctx context.Context, seqId int32, ipr
 	iprot.ReadMessageEnd()
 	var err2 error
 	result := GameServiceMoveResult{}
-	var retval *MoveResp
+	var retval *FindPathResp
 	if retval, err2 = p.handler.Move(ctx, args.Req); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing Move: "+err2.Error())
 		oprot.WriteMessageBegin("Move", thrift.EXCEPTION, seqId)
@@ -2102,7 +2443,7 @@ func (p *GameServiceMatchResult) Field0DeepEqual(src *MatchResp) bool {
 }
 
 type GameServiceMoveArgs struct {
-	Req *MoveReq `thrift:"req,1" frugal:"1,default,MoveReq" json:"req"`
+	Req *FindPathReq `thrift:"req,1" frugal:"1,default,FindPathReq" json:"req"`
 }
 
 func NewGameServiceMoveArgs() *GameServiceMoveArgs {
@@ -2113,15 +2454,15 @@ func (p *GameServiceMoveArgs) InitDefault() {
 	*p = GameServiceMoveArgs{}
 }
 
-var GameServiceMoveArgs_Req_DEFAULT *MoveReq
+var GameServiceMoveArgs_Req_DEFAULT *FindPathReq
 
-func (p *GameServiceMoveArgs) GetReq() (v *MoveReq) {
+func (p *GameServiceMoveArgs) GetReq() (v *FindPathReq) {
 	if !p.IsSetReq() {
 		return GameServiceMoveArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *GameServiceMoveArgs) SetReq(val *MoveReq) {
+func (p *GameServiceMoveArgs) SetReq(val *FindPathReq) {
 	p.Req = val
 }
 
@@ -2190,7 +2531,7 @@ ReadStructEndError:
 }
 
 func (p *GameServiceMoveArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewMoveReq()
+	p.Req = NewFindPathReq()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
 	}
@@ -2262,7 +2603,7 @@ func (p *GameServiceMoveArgs) DeepEqual(ano *GameServiceMoveArgs) bool {
 	return true
 }
 
-func (p *GameServiceMoveArgs) Field1DeepEqual(src *MoveReq) bool {
+func (p *GameServiceMoveArgs) Field1DeepEqual(src *FindPathReq) bool {
 
 	if !p.Req.DeepEqual(src) {
 		return false
@@ -2271,7 +2612,7 @@ func (p *GameServiceMoveArgs) Field1DeepEqual(src *MoveReq) bool {
 }
 
 type GameServiceMoveResult struct {
-	Success *MoveResp `thrift:"success,0,optional" frugal:"0,optional,MoveResp" json:"success,omitempty"`
+	Success *FindPathResp `thrift:"success,0,optional" frugal:"0,optional,FindPathResp" json:"success,omitempty"`
 }
 
 func NewGameServiceMoveResult() *GameServiceMoveResult {
@@ -2282,16 +2623,16 @@ func (p *GameServiceMoveResult) InitDefault() {
 	*p = GameServiceMoveResult{}
 }
 
-var GameServiceMoveResult_Success_DEFAULT *MoveResp
+var GameServiceMoveResult_Success_DEFAULT *FindPathResp
 
-func (p *GameServiceMoveResult) GetSuccess() (v *MoveResp) {
+func (p *GameServiceMoveResult) GetSuccess() (v *FindPathResp) {
 	if !p.IsSetSuccess() {
 		return GameServiceMoveResult_Success_DEFAULT
 	}
 	return p.Success
 }
 func (p *GameServiceMoveResult) SetSuccess(x interface{}) {
-	p.Success = x.(*MoveResp)
+	p.Success = x.(*FindPathResp)
 }
 
 var fieldIDToName_GameServiceMoveResult = map[int16]string{
@@ -2359,7 +2700,7 @@ ReadStructEndError:
 }
 
 func (p *GameServiceMoveResult) ReadField0(iprot thrift.TProtocol) error {
-	p.Success = NewMoveResp()
+	p.Success = NewFindPathResp()
 	if err := p.Success.Read(iprot); err != nil {
 		return err
 	}
@@ -2433,7 +2774,7 @@ func (p *GameServiceMoveResult) DeepEqual(ano *GameServiceMoveResult) bool {
 	return true
 }
 
-func (p *GameServiceMoveResult) Field0DeepEqual(src *MoveResp) bool {
+func (p *GameServiceMoveResult) Field0DeepEqual(src *FindPathResp) bool {
 
 	if !p.Success.DeepEqual(src) {
 		return false

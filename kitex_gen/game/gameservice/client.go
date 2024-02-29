@@ -12,7 +12,7 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	Match(ctx context.Context, req *game.MatchReq, callOptions ...callopt.Option) (r *game.MatchResp, err error)
-	Move(ctx context.Context, req *game.MoveReq, callOptions ...callopt.Option) (r *game.MoveResp, err error)
+	Move(ctx context.Context, req *game.FindPathReq, callOptions ...callopt.Option) (r *game.FindPathResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -49,7 +49,7 @@ func (p *kGameServiceClient) Match(ctx context.Context, req *game.MatchReq, call
 	return p.kClient.Match(ctx, req)
 }
 
-func (p *kGameServiceClient) Move(ctx context.Context, req *game.MoveReq, callOptions ...callopt.Option) (r *game.MoveResp, err error) {
+func (p *kGameServiceClient) Move(ctx context.Context, req *game.FindPathReq, callOptions ...callopt.Option) (r *game.FindPathResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Move(ctx, req)
 }

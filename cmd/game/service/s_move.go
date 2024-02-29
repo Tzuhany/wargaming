@@ -6,7 +6,7 @@ import (
 	"wargaming/pkg/h3code"
 )
 
-func (s *GameService) Move(req *game.MoveReq) (*game.MoveResp, error) {
+func (s *GameService) Move(req *game.FindPathReq) (*game.FindPathResp, error) {
 
 	var cells []h3.Cell
 	var obstacleCells []h3.Cell
@@ -37,7 +37,7 @@ func (s *GameService) Move(req *game.MoveReq) (*game.MoveResp, error) {
 
 	path := aStar.FindPath(startTail, endTail)
 
-	resp := new(game.MoveResp)
+	resp := new(game.FindPathResp)
 
 	for _, p := range path {
 		resp.Path = append(resp.Path, int64(p.Position))
