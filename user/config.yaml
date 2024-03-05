@@ -1,0 +1,30 @@
+metric: 5854
+
+service:
+  name: user
+  addr:
+    - 0.0.0.0:10001
+
+log:
+  level: 1
+
+jwt:
+  accessSecret: MTAxNTkwMTg1Mw==
+  accessExpire: 3600
+
+mysql:
+  addr: localhost:3307
+  database: wargaming
+  user: wargaming
+  password: wargaming
+  charset: utf8mb4
+
+redis:
+  addr: localhost:6378
+  password: wargaming
+
+consul:
+  addr: localhost:8500
+
+jaeger:
+  addr: localhost:6831

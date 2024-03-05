@@ -30,18 +30,6 @@ services:
     networks:
       - wargaming
 
-  rabbitmq:
-    container_name: wargaming-rabbitmq
-    image: "rabbitmq:management"
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=wargaming
-      - RABBITMQ_DEFAULT_PASS=wargaming
-    networks:
-      - wargaming
-
   consul:
     container_name: wargaming-consul
     image: hashicorp/consul:latest
