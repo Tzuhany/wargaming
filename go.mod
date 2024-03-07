@@ -1,6 +1,8 @@
 module wargaming
 
-go 1.21
+go 1.21.4
+
+replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
 
 require (
 	github.com/apache/thrift v0.13.0
@@ -130,5 +132,3 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace github.com/apache/thrift => github.com/apache/thrift v0.13.0

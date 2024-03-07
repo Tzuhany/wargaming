@@ -6,7 +6,7 @@ struct BaseResp {
 }
 
 struct User {
-    1: required string id,
+    1: required string uid,
     2: required string username,
 }
 
@@ -17,7 +17,7 @@ struct RegisterReq {
 
 struct RegisterResp {
     1: required BaseResp base,
-    2: required string user_id,
+    2: required string uid,
     3: required string token,
     4: required string connector_addr
 }
@@ -29,7 +29,7 @@ struct LoginReq {
 
 struct LoginResp {
     1: required BaseResp base,
-    2: required string user_id,
+    2: required string uid,
     3: required string token
     4: required string connector_addr
 }

@@ -36,7 +36,7 @@ func (s *UserService) Register(ctx context.Context, req *user.RegisterReq) (*use
 	}
 
 	return &user.RegisterResp{
-		UserId: uid,
-		Token:  token,
+		Uid:   uid,
+		Token: token,
 	}, nil
 }

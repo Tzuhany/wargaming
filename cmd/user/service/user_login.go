@@ -28,7 +28,7 @@ func (s *UserService) Login(ctx context.Context, req *user.LoginReq) (*user.Logi
 	}
 
 	return &user.LoginResp{
-		UserId: userModel.UID,
-		Token:  token,
+		Uid:   userModel.UID,
+		Token: token,
 	}, nil
 }
