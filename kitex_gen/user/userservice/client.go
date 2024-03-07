@@ -13,7 +13,6 @@ import (
 type Client interface {
 	Register(ctx context.Context, req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error)
 	Login(ctx context.Context, req *user.LoginReq, callOptions ...callopt.Option) (r *user.LoginResp, err error)
-	UserInfo(ctx context.Context, req *user.UserInfoReq, callOptions ...callopt.Option) (r *user.UserInfoResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -53,9 +52,4 @@ func (p *kUserServiceClient) Register(ctx context.Context, req *user.RegisterReq
 func (p *kUserServiceClient) Login(ctx context.Context, req *user.LoginReq, callOptions ...callopt.Option) (r *user.LoginResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Login(ctx, req)
-}
-
-func (p *kUserServiceClient) UserInfo(ctx context.Context, req *user.UserInfoReq, callOptions ...callopt.Option) (r *user.UserInfoResp, err error) {
-	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.UserInfo(ctx, req)
 }

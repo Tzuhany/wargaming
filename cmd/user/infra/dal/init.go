@@ -1,51 +1,36 @@
 package dal
 
 import (
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
-	"gorm.io/gorm/schema"
-	gormopentracing "gorm.io/plugin/opentracing"
-	"wargaming/pkg/constants"
-	"wargaming/pkg/utils"
+	"context"
+	"github.com/cloudwego/kitex/pkg/klog"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"time"
+	"wargaming/common/config"
 )
 
-var DB *gorm.DB
+var (
+	MongoDB *mongo.Database
+)
 
 func Init() {
-	var err error
-
-	DB, err = gorm.Open(mysql.Open(utils.GetMysqlDSN()),
-		&gorm.Config{
-			PrepareStmt:            true,
-			SkipDefaultTransaction: true,                                // 禁用默认事务
-			Logger:                 logger.Default.LogMode(logger.Info), // 设置日志模式
-			NamingStrategy: schema.NamingStrategy{
-				SingularTable: true, // 使用单数表名
-			},
-		})
-
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	clientOptions := options.Client().ApplyURI(config.Mongo.Url)
+	clientOptions.SetAuth(options.Credential{
+		Username: config.Mongo.UserName,
+		Password: config.Mongo.Password,
+	})
+	clientOptions.SetMinPoolSize(uint64(config.Mongo.MinPoolSize))
+	clientOptions.SetMaxPoolSize(uint64(config.Mongo.MaxPoolSize))
+	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		panic(err)
+		klog.Fatal(err)
+	}
+	if err := client.Ping(ctx, readpref.Primary()); err != nil {
+		klog.Fatal(err)
 	}
 
-	if err = DB.Use(gormopentracing.New()); err != nil {
-		panic(err)
-	}
-
-	sqlDB, err := DB.DB()
-
-	if err != nil {
-		panic(err)
-	}
-
-	sqlDB.SetMaxIdleConns(constants.MaxIdleConn)        // 最大闲置连接数
-	sqlDB.SetMaxOpenConns(constants.MaxConnections)     // 最大连接数
-	sqlDB.SetConnMaxLifetime(constants.ConnMaxLifetime) // 最大可复用时间
-
-	if err = DB.AutoMigrate(&User{}); err != nil {
-		panic(err)
-	}
-
-	DB = DB.Table(constants.UserTableName)
+	MongoDB = client.Database(config.Mongo.DB)
 }

@@ -9,11 +9,11 @@ import (
 	trace "github.com/kitex-contrib/tracer-opentracing"
 	"net"
 	"wargaming/cmd/user/infra"
-	"wargaming/config"
+	"wargaming/common/config"
+	"wargaming/common/constants"
+	"wargaming/common/tracer"
+	"wargaming/common/utils"
 	user "wargaming/kitex_gen/user/userservice"
-	"wargaming/pkg/constants"
-	"wargaming/pkg/tracer"
-	"wargaming/pkg/utils"
 )
 
 var (
@@ -41,13 +41,13 @@ func main() {
 	}
 
 	// get available port from config set
-	for index, addr := range config.Service.AddrList {
+	for index, addr := range config.Service.Addr {
 		if ok := utils.AddrCheck(addr); ok {
 			listenAddr = addr
 			break
 		}
 
-		if index == len(config.Service.AddrList)-1 {
+		if index == len(config.Service.Addr)-1 {
 			klog.Fatal("not available port from config")
 		}
 	}

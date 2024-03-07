@@ -3,63 +3,55 @@ package dal
 import (
 	"context"
 	"errors"
-	"gorm.io/gorm"
-	"wargaming/pkg/errno"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"time"
 )
 
 type User struct {
-	gorm.Model
-	Username string `gorm:"not null;type:varchar(20);comment:'用户名'"`
-	Password string `gorm:"not null;type:varchar(255);comment:'用户密码'"`
-	Rank     int    `gorm:"not null;type:uint;default:0;comment:'用户等级'"`
+	Id         primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	UID        string             `bson:"uid" json:"uid"`
+	Username   string             `bson:"username" json:"username"`
+	Password   string             `bson:"password" json:"password"`
+	CreateTime time.Time          `bson:"create_time" json:"create_time"`
+	Avatar     string             `bson:"avatar" json:"avatar"` // 头像
 }
 
-func CreateUser(ctx context.Context, user *User) error {
-	userResp := new(User)
-
-	err := DB.WithContext(ctx).Where("username = ?", user.Username).First(&userResp).Error
-
-	if err == nil {
-		return errno.UserExistedError
-	}
-
-	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		return err
-	}
-
-	if err := DB.WithContext(ctx).Create(user).Error; err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func GetUserByUsername(ctx context.Context, username string) (*User, error) {
-	userResp := new(User)
-
-	err := DB.WithContext(ctx).Where("username = ?", username).First(&userResp).Error
-
+func FindUserByUID(ctx context.Context, uid string) (*User, error) {
+	db := MongoDB.Collection("user")
+	singleResult := db.FindOne(ctx, bson.D{
+		{"uid", uid},
+	})
+	user := new(User)
+	err := singleResult.Decode(user)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errno.UserNotFoundError
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, nil
 		}
 		return nil, err
 	}
-
-	return userResp, nil
+	return user, nil
 }
 
-func GetUserByID(ctx context.Context, userid int64) (*User, error) {
-	userResp := new(User)
-
-	err := DB.WithContext(ctx).Where("id = ?", userid).First(&userResp).Error
-
+func FindUserByUsername(ctx context.Context, username string) (*User, error) {
+	db := MongoDB.Collection("user")
+	singleResult := db.FindOne(ctx, bson.D{
+		{"username", username},
+	})
+	user := new(User)
+	err := singleResult.Decode(user)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errno.UserNotFoundError
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, nil
 		}
 		return nil, err
 	}
+	return user, nil
+}
 
-	return userResp, nil
+func Insert(ctx context.Context, user *User) error {
+	db := MongoDB.Collection("user")
+	_, err := db.InsertOne(ctx, user)
+	return err
 }

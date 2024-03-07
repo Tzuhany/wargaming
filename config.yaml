@@ -1,0 +1,29 @@
+jwt:
+  accessSecret: MTAxNTkwMTg1Mw==
+  accessExpire: 3600
+
+redis:
+  addr: localhost:6378
+  password: wargaming
+  db: 0
+
+consul:
+  addr: localhost:8500
+
+jaeger:
+  addr: localhost:6831
+
+mongo:
+  url: mongodb://0.0.0.0:27018
+  userName: root
+  password: yzh
+  minPoolSize: 10
+  maxPoolSize: 100
+  db: wargaming
+
+services:
+  user:
+    name: user
+    load-balance: false
+    addr:
+      - 0.0.0.0:10002

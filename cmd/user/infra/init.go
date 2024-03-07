@@ -1,11 +1,7 @@
 package infra
 
-import (
-	"wargaming/cmd/user/infra/cache"
-	"wargaming/cmd/user/infra/dal"
-)
+import "wargaming/cmd/user/infra/dal"
 
 func Init() {
 	dal.Init()
-	cache.Init()
 }
