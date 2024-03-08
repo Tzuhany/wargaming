@@ -11,6 +11,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.4.0
+	github.com/hertz-contrib/websocket v0.1.0
 	github.com/joho/godotenv v1.5.1
 	github.com/kitex-contrib/registry-consul v0.0.0-20230406075225-7d341f036654
 	github.com/kitex-contrib/tracer-opentracing v0.0.3
@@ -19,6 +20,7 @@ require (
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	go.mongodb.org/mongo-driver v1.14.0
 	golang.org/x/crypto v0.17.0
+	golang.org/x/net v0.19.0
 )
 
 require (
@@ -115,7 +117,6 @@ require (
 	go.uber.org/zap v1.21.0 // indirect
 	golang.org/x/arch v0.2.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
-	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/oauth2 v0.15.0 // indirect
 	golang.org/x/sync v0.5.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
